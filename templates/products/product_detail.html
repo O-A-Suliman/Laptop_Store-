@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-lg-10">
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="row g-0">
+                
+                <div class="col-md-6 bg-white d-flex align-items-center justify-content-center p-4">
+                    {% if object.image %}
+                    <img src="{{ object.image.url }}" class="img-fluid rounded-start" alt="{{ object.name }}" style="max-height: 400px; object-fit: contain;">
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6 bg-light">
+                    <div class="card-body p-5 d-flex flex-column h-100">
+                        <div class="mb-4">
+                            <span class="badge bg-secondary mb-2 fs-6">{{ object.category.name }}</span>
+                            <h2 class="card-title fw-bold text-dark mb-3">{{ object.name }}</h2>
+                            <h3 class="text-primary fw-bold mb-4">{{ object.price }} $</h3>
+                        </div>
+
+                        <div class="mb-5">
+                            <h5 class="fw-bold text-dark">المواصفات والتفاصيل:</h5>
+                            <p class="card-text text-muted" style="line-height: 1.8;">
+                                {{ object.description|linebreaks }}
+                            </p>
+                        </div>
+
+                        <div class="mt-auto">
+                            <a href="https://wa.me/00201XXXXXXXXX?text=مرحباً، أريد طلب هذا اللابتوب: {{ object.name|urlencode }}" 
+                               target="_blank" 
+                               class="btn btn-success btn-lg w-100 fw-bold rounded-pill shadow-sm d-flex justify-content-center align-items-center gap-2">
+                               <i class="bi bi-whatsapp"></i> اطلب الآن عبر واتساب
+                            </a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 text-center">
+            <a href="/" class="btn btn-outline-secondary rounded-pill px-4">← العودة للمتجر</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
