@@ -8,11 +8,15 @@ class ProductsList(ListView):
     model=Product
     template_name="products/home.html"
     context_object_name="products"
+    paginate_by=2
     def get_queryset(self):
         queryset= super().get_queryset()
         serech_queryset=self.request.GET.get("q")
+        category_query=self.request.GET.get("category")
         if serech_queryset:
             queryset=queryset.filter(name__icontains=serech_queryset)
+        if category_query:
+            queryset=queryset.filter(category__name__icontains=category_query)
         return queryset
 class ProductDetail(DetailView):
     model = Product

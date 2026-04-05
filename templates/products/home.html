@@ -50,4 +50,43 @@
     </div>
     {% endfor %}
 </div>
+{% if is_paginated %}
+<nav aria-label="Page navigation" class="mt-5">
+    <ul class="pagination justify-content-center pagination-lg">
+        
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link shadow-sm" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% elif request.GET.category %}&category={{ request.GET.category }}{% endif %}">السابق</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link shadow-sm text-muted">السابق</span>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link shadow-sm bg-primary border-primary">{{ num }}</span>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link shadow-sm text-dark" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% elif request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link shadow-sm" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% elif request.GET.category %}&category={{ request.GET.category }}{% endif %}">التالي</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link shadow-sm text-muted">التالي</span>
+        </li>
+        {% endif %}
+        
+    </ul>
+</nav>
+{% endif %}
 {% endblock %}
