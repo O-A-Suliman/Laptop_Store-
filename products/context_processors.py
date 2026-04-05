@@ -1,5 +1,4 @@
-def GetInfo(request):
-    return {
-        'site_email': 'contact@abeer-marketing.com',
-        'site_phone': '+201500159906',
-    }
+from .models import StoreSetting
+def store_settings_context(request):
+    setting_object=StoreSetting.objects.first()
+    return {'site_settings': setting_object}
