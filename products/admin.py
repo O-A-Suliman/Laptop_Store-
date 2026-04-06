@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product,Category,StoreSetting
+from .models import Product,Category,StoreSetting,Order
 # Register your models here.
 @admin.register(Product)
 class AdminProduct(admin.ModelAdmin):
@@ -18,3 +18,4 @@ admin.site.register(Category)
 @admin.register(StoreSetting)
 class AdminStoreSetting(admin.ModelAdmin):
     list_display=['name','whatsapp_number']
+admin.site.register(Order)
