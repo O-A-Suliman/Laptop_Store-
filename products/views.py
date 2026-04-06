@@ -30,3 +30,6 @@ class ProductListAPI(generics.ListAPIView):
 class ProductDetailAPI(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+def GetDashborad(request):
+    return render(request,'products/dashborad.html')
