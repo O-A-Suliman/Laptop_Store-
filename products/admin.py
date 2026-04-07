@@ -3,11 +3,11 @@ from .models import Product,Category,StoreSetting,Order
 # Register your models here.
 @admin.register(Product)
 class AdminProduct(admin.ModelAdmin):
-    list_display=["name","category","price","stack"]
+    list_display=["name","category","price","stock"]
     list_filter=['category',]
     fieldsets=(
         ('Basic data',{
-            'fields':("name", "price", "description",'stack')
+            'fields':("name", "price", "description",'stock')
             }),
         ("Technical specifications",{
             'fields':('CPU','RAM','storage','GPU'),

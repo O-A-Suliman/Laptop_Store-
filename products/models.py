@@ -17,7 +17,7 @@ class Product(models.Model):
     RAM=models.CharField(max_length=255)
     storage=models.CharField(max_length=255)
     GPU=models.CharField(max_length=255)
-    stack=models.IntegerField(default=0)
+    stock=models.IntegerField(default=0)
     def __str__(self):
         return self.name
     
