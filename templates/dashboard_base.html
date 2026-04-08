@@ -171,29 +171,13 @@
     </aside>
 
     <div class="layout-page">
-      <nav class="navbar-custom">
+    <nav class="navbar-custom">
     <div class="d-flex align-items-center">
         <i class="bi bi-search fs-4 text-muted"></i>
         <input type="text" class="search-box ms-2" placeholder="بحث...">
     </div>
     
     <div class="d-flex align-items-center gap-3">
-        <div class="dropdown">
-            <a href="#" class="text-muted position-relative" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-bell fs-4"></i>
-                <span class="position-absolute top-25 start-75 translate-middle p-1 bg-danger border border-light rounded-circle">
-                    <span class="visually-hidden">إشعارات جديدة</span>
-                </span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-3" style="width: 280px;">
-                <li><h6 class="dropdown-header fw-bold text-dark fs-6">الإشعارات الجديدة</h6></li>
-                <li><a class="dropdown-item py-2" href="{% url 'dashboard_orders' %}">🛒 طلب جديد من محمد</a></li>
-                <li><a class="dropdown-item py-2" href="{% url 'dashboard_inventory' %}">⚠️ لابتوب Dell اقترب من النفاد</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-center text-primary fw-bold" href="#">عرض كل الإشعارات</a></li>
-            </ul>
-        </div>
-
         <div class="dropdown">
             <a href="#" class="d-flex align-items-center text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
                 <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" style="width: 40px; height: 40px; background-color: #696cff;">
@@ -203,15 +187,15 @@
             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-3">
                 <li>
                     <div class="dropdown-item-text">
-                        <div class="fw-bold text-dark">مدير المتجر</div>
-                        <small class="text-muted">admin@store.com</small>
+                        <div class="fw-bold text-dark">{{ request.user.first_name|default:request.user.username }}</div>
+                        <small class="text-muted">{{ request.user.email }}</small>
                     </div>
                 </li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person me-2"></i> حسابي</a></li>
-                <li><a class="dropdown-item py-2" href="#"><i class="bi bi-gear me-2"></i> الإعدادات</a></li>
+                <li><a class="dropdown-item py-2" href="/admin/auth/user/"><i class="bi bi-person me-2"></i> حسابي</a></li>
+                <li><a class="dropdown-item py-2" href="/admin/"><i class="bi bi-gear me-2"></i> الإعدادات المتقدمة</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger py-2" href="#"><i class="bi bi-box-arrow-right me-2"></i> تسجيل الخروج</a></li>
+                <li><a class="dropdown-item text-danger py-2" href="{% url 'admin:logout' %}"><i class="bi bi-box-arrow-right me-2"></i> تسجيل الخروج</a></li>
             </ul>
         </div>
     </div>

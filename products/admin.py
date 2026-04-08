@@ -7,7 +7,7 @@ class AdminProduct(admin.ModelAdmin):
     list_filter=['category',]
     fieldsets=(
         ('Basic data',{
-            'fields':("name", "price", "description",'stock')
+            'fields':("name", "price", "description",'stock',"category")
             }),
         ("Technical specifications",{
             'fields':('CPU','RAM','storage','GPU'),

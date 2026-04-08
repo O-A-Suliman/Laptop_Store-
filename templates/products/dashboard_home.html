@@ -70,84 +70,6 @@
                 <h5 class="mb-0 fw-bold text-dark">أحدث الطلبات الواردة</h5>
                 <a href="{% url 'dashboard_orders' %}" class="btn btn-sm btn-outline-primary fw-bold">عرض الكل</a>
             </div>
-            <div class="row mt-4">
-    <div class="col-lg-8 mb-4">
-        <div class="card h-100 border-0 shadow-sm">
-            <div class="card-header bg-white py-3 border-bottom-0">
-                <h5 class="mb-0 fw-bold text-dark">المبيعات مقابل المشتريات</h5>
-            </div>
-            <div class="card-body">
-                <canvas id="salesChart" height="120"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-4 mb-4">
-        <div class="card h-100 border-0 shadow-sm">
-            <div class="card-header bg-white py-3 border-bottom-0">
-                <h5 class="mb-0 fw-bold text-dark">نظرة عامة على العملاء</h5>
-            </div>
-            <div class="card-body d-flex justify-content-center align-items-center">
-                <canvas id="customersChart" height="200"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // 1. رسم المبيعات (Bar Chart)
-    const salesCtx = document.getElementById('salesChart').getContext('2d');
-    new Chart(salesCtx, {
-        type: 'bar',
-        data: {
-            labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
-            datasets: [
-                {
-                    label: 'المبيعات',
-                    data: [120, 190, 300, 250, 200, 350],
-                    backgroundColor: '#ffab00', /* اللون البرتقالي المائل للذهبي */
-                    borderRadius: 4,
-                },
-                {
-                    label: 'المشتريات',
-                    data: [80, 150, 200, 180, 100, 220],
-                    backgroundColor: '#ffe0db', /* لون برتقالي فاتح */
-                    borderRadius: 4,
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } },
-            scales: {
-                y: { beginAtZero: true, grid: { borderDash: [5, 5] } },
-                x: { grid: { display: false } }
-            }
-        }
-    });
-
-    // 2. رسم العملاء (Doughnut Chart)
-    const custCtx = document.getElementById('customersChart').getContext('2d');
-    new Chart(custCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['عملاء جدد', 'عملاء عائدون'],
-            datasets: [{
-                data: [60, 40],
-                backgroundColor: ['#71dd37', '#ffab00'], /* أخضر وبرتقالي */
-                borderWidth: 0,
-                cutout: '75%' /* لتفريغ الدائرة من المنتصف */
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } }
-        }
-    });
-});
-</script>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0 text-center">
                     <thead class="table-light text-muted">
@@ -164,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <tr>
                             <td class="fw-bold py-3 text-dark">{{ order.name }}</td>
                             <td class="py-3 text-muted">{{ order.product.name }}</td>
-                            <td class="fw-bold text-success py-3">${{ order.total_price }}</td>
+                            <td class="fw-bold text-success py-3">${{ order.total_price|default:order.product.price }}</td>
                             <td class="py-3 text-muted">{{ order.date_order|date:"Y-m-d" }}</td>
                             <td class="py-3">
                                 {% if order.status == 'PENDING' %}
