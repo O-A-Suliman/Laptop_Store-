@@ -12,8 +12,8 @@ urlpatterns = [
     path("dashboard/inventory/",DashboardInventoryView.as_view(),name="dashboard_inventory"),
     path("dashboard/reports/",dashboard_reports_view,name='dashboard_reports'),
     path('products/add/<int:product_id>/',add_to_cart,name='add_to_cart'),
-    path('products/cartlist/',cart_view,name='cart_view'),
-    path('product/checkout/',cart_view,name='checkout'),
+    path('products/cartlist/', cart_view, name='cart_view'),
+    path('product/checkout/', checkout_view, name='checkout'),
 
     # ---- روابط الـ API الجديدة (JSON) ----
     path("api/products/", ProductListAPI.as_view(), name="api_products_list"),
