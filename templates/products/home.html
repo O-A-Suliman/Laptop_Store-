@@ -1,124 +1,217 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المتجر ⚙️</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bs-primary: #696cff; 
+            --bs-success: #71dd37;
+            --bs-warning: #ffab00;
+            --bs-danger: #ff3e1d;
+            --bs-body-bg: #f5f5f9;
+            --bs-text-color: #566a7f;
+            --bs-heading-color: #435971;
+            --bs-card-shadow: 0 0.125rem 0.25rem rgba(161, 172, 184, 0.12);
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bs-body-bg);
+            color: var(--bs-text-color);
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar */
+        #sidebar {
+            width: 260px;
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            background: #fff;
+            box-shadow: var(--bs-card-shadow);
+            z-index: 1030;
+            transition: 0.3s;
+        }
+        .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--bs-heading-color);
+            text-decoration: none;
+        }
+        .sidebar-logo i { color: var(--bs-primary); margin-left: 8px; }
+        
+        .menu-inner { padding: 0; margin: 0; list-style: none; }
+        .menu-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04rem;
+            color: #a1acb8;
+            margin: 1.5rem 2rem 0.5rem;
+            font-weight: 700;
+        }
+        .menu-item { margin: 0.2rem 1rem; }
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 0.625rem 1rem;
+            border-radius: 0.375rem;
+            color: #697a8d;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            font-weight: 600;
+        }
+        .menu-link i { font-size: 1.25rem; margin-left: 12px; }
+        
+        .menu-item:hover .menu-link {
+            background-color: rgba(105, 108, 255, 0.04);
+            color: var(--bs-primary);
+        }
+        .menu-item.active .menu-link {
+            background-color: var(--bs-primary);
+            color: #fff;
+            box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4);
+        }
 
-{% block content %}
-<style>
-    .product-card {
-        transition: all 0.3s ease-in-out;
-        border: 1px solid #f0f0f0;
-    }
-    .product-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important;
-        border-color: #212529;
-    }
-    .hero-section {
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        color: white;
-        border-radius: 1.5rem;
-    }
-    .spec-item {
-        font-size: 0.85rem;
-    }
-    .cursor-pointer {
-        cursor: pointer;
-    }
-</style>
+        /* Main Content */
+        .layout-page {
+            margin-right: 260px;
+            padding: 1.5rem;
+            min-height: 100vh;
+        }
 
-<div class="container my-4">
-    <div class="hero-section p-5 text-center shadow-lg position-relative overflow-hidden">
-        <h1 class="display-4 fw-bolder mb-3 position-relative z-1">أقوى اللابتوبات بين يديك 🚀</h1>
-        <p class="lead mb-4 opacity-75 position-relative z-1">اكتشف تشكيلتنا الجديدة بأفضل الأسعار، واطلب الآن مباشرة عبر الواتساب!</p>
-    </div>
-</div>
+        /* Navbar */
+        .navbar-custom {
+            background: #fff;
+            border-radius: 0.375rem;
+            box-shadow: var(--bs-card-shadow);
+            padding: 0.75rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .search-box {
+            border: none;
+            background: transparent;
+            outline: none;
+            padding: 0.5rem;
+            width: 250px;
+            color: var(--bs-text-color);
+        }
 
-<div class="container mb-5">
-    <div class="bg-white p-4 rounded-4 shadow-sm border">
-        <div class="row align-items-center">
-            <div class="col-md-8 mb-3 mb-md-0">
-                <div class="d-flex gap-2 overflow-auto pb-2" style="white-space: nowrap;">
-                    <a href="{% url 'ProductsList' %}" class="btn btn-{% if not request.GET.category %}dark{% else %}outline-dark{% endif %} rounded-pill px-4 fw-bold shadow-sm">الكل</a>
-                    
-                    {% for cat in categories %}
-                    <a href="?category={{ cat.name }}" class="btn btn-{% if request.GET.category == cat.name %}dark{% else %}outline-dark{% endif %} rounded-pill px-4 fw-bold shadow-sm">{{ cat.name }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <form action="{% url 'ProductsList' %}" method="GET">
-                    <div class="input-group shadow-sm rounded-pill overflow-hidden">
-                        <input type="text" name="q" class="form-control border-dark ps-4" placeholder="ابحث عن لابتوب..." value="{{ request.GET.q|default:'' }}">
-                        {% if request.GET.category %}
-                        <input type="hidden" name="category" value="{{ request.GET.category }}">
-                        {% endif %}
-                        <button type="submit" class="btn btn-dark px-4"><i class="bi bi-search"></i></button>
-                    </div>
-                </form>
-            </div>
+        /* Cards */
+        .card {
+            border: 0;
+            box-shadow: var(--bs-card-shadow);
+            border-radius: 0.5rem;
+        }
+        .bg-pale-danger { background-color: #ffe0db !important; }
+        .bg-pale-success { background-color: #e8fadf !important; }
+        .bg-pale-primary { background-color: #e7e7ff !important; }
+        .bg-pale-warning { background-color: #fff2d6 !important; }
+    </style>
+</head>
+<body>
+
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'dashboard' %}" class="sidebar-logo">
+                <i class="bi bi-laptop"></i> TechStore
+            </a>
         </div>
-    </div>
-</div>
 
-<div class="container">
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-5">
-        {% for product in products %}
-        <div class="col">
-            <div class="card h-100 product-card rounded-4 bg-white overflow-hidden cursor-pointer" onclick="window.location.href='{% url 'product_detail' product.id %}'">
-                
-                <div class="bg-light p-4 text-center position-relative" style="height: 280px; display: flex; align-items: center; justify-content: center;">
-                    <span class="position-absolute top-0 start-0 m-3 badge bg-dark rounded-pill px-3 py-2 z-1 shadow-sm">{{ product.category.name }}</span>
-                    {% if product.image %}
-                    <img src="{{ product.image.url }}" class="img-fluid" style="max-height: 100%; object-fit: contain; transition: transform 0.4s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'" alt="{{ product.name }}">
-                    {% else %}
-                    <i class="bi bi-laptop text-secondary" style="font-size: 8rem;"></i>
-                    {% endif %}
-                </div>
-                
-                <div class="card-body p-4 d-flex flex-column">
-                    <h5 class="fw-bold mb-3 text-truncate" title="{{ product.name }}">{{ product.name }}</h5>
-                    
-                    <div class="mb-4 text-muted bg-light p-3 rounded-3 spec-item border">
-                        <div class="mb-2"><i class="bi bi-cpu text-dark me-2"></i> <strong>المعالج:</strong> {{ product.CPU }}</div>
-                        <div class="mb-2"><i class="bi bi-memory text-dark me-2"></i> <strong>الرام:</strong> {{ product.RAM }}</div>
-                        <div><i class="bi bi-gpu-card text-dark me-2"></i> <strong>كارت الشاشة:</strong> {{ product.GPU }}</div>
-                    </div>
-                    
-                    <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <h3 class="text-success fw-bolder mb-0">${{ product.price }}</h3>
-                        
-                        {% if product.stock > 0 %}
-                        <object><a href="{% url 'add_to_cart' product.id %}" class="btn btn-dark rounded-pill px-4 shadow fw-bold">
-                            <i class="bi bi-cart-plus me-1"></i> للسلة
-                        </a></object>
-                        {% else %}
-                        <span class="badge bg-danger rounded-pill px-3 py-2 fs-6">نفد المخزون</span>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12 text-center py-5">
-            <i class="bi bi-emoji-frown text-muted mb-3" style="font-size: 4rem;"></i>
-            <h2 class="text-muted fw-bold">لا توجد أجهزة مطابقة لبحثك</h2>
-            <a href="{% url 'ProductsList' %}" class="btn btn-dark mt-3 rounded-pill px-5 py-2 shadow-sm">إظهار كل اللابتوبات</a>
-        </div>
-        {% endfor %}
-    </div>
-
-    {% if is_paginated %}
-    <div class="d-flex justify-content-center mt-5 mb-5">
-        <ul class="pagination pagination-lg shadow-sm">
-            {% if page_obj.has_previous %}
-            <li class="page-item"><a class="page-link text-dark rounded-start-pill border-dark fw-bold" href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q|default:'' }}&category={{ request.GET.category|default:'' }}">السابق</a></li>
-            {% endif %}
+        <ul class="menu-inner">
+            <li class="menu-header">الرئيسية</li>
+            <li class="menu-item active">
+                <a href="{% url 'dashboard' %}" class="menu-link">
+                    <i class="bi bi-house-door"></i> <div>لوحة القيادة</div>
+                </a>
+            </li>
             
-            <li class="page-item active"><span class="page-link bg-dark border-dark">{{ page_obj.number }}</span></li>
-            
-            {% if page_obj.has_next %}
-            <li class="page-item"><a class="page-link text-dark rounded-end-pill border-dark fw-bold" href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q|default:'' }}&category={{ request.GET.category|default:'' }}">التالي</a></li>
-            {% endif %}
+            <li class="menu-header">إدارة المتجر</li>
+            <li class="menu-item">
+                <a href="{% url 'dashboard_orders' %}" class="menu-link">
+                    <i class="bi bi-cart-check"></i> <div>الطلبات</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="{% url 'dashboard_inventory' %}" class="menu-link">
+                    <i class="bi bi-box-seam"></i> <div>المخزون</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="{% url 'dashboard_reports' %}" class="menu-link">
+                    <i class="bi bi-graph-up-arrow"></i> <div>التقارير والأرباح</div>
+                </a>
+            </li>
+
+            <li class="menu-header">روابط خارجية</li>
+            <li class="menu-item">
+                <a href="{% url 'ProductsList' %}" class="menu-link text-success">
+                    <i class="bi bi-shop-window"></i> <div>عرض المتجر</div>
+                </a>
+            </li>
         </ul>
+    </aside>
+
+    <div class="layout-page">
+        <nav class="navbar-custom">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-search fs-4 text-muted"></i>
+                <input type="text" class="search-box ms-2" placeholder="بحث...">
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="dropdown">
+                    <a href="#" class="text-muted position-relative" data-bs-toggle="dropdown">
+                        <i class="bi bi-bell fs-4"></i>
+                        <span class="position-absolute top-25 start-75 translate-middle p-1 bg-danger border border-light rounded-circle">
+                            <span class="visually-hidden">إشعارات جديدة</span>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-3" style="width: 280px;">
+                        <li><h6 class="dropdown-header fw-bold text-dark fs-6">الإشعارات</h6></li>
+                        <li><a class="dropdown-item py-2" href="{% url 'dashboard_orders' %}">🛒 طلب جديد تم استلامه</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-center text-primary fw-bold" href="#">عرض الكل</a></li>
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none" data-bs-toggle="dropdown">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" style="width: 40px; height: 40px; background-color: #696cff;">
+                            AD
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-3">
+                        <li>
+                            <div class="dropdown-item-text">
+                                <div class="fw-bold text-dark">مدير المتجر</div>
+                                <small class="text-muted">admin@store.com</small>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger py-2" href="#"><i class="bi bi-box-arrow-right me-2"></i> تسجيل الخروج</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        {% block dashboard_content %}{% endblock %}
     </div>
-    {% endif %}
-</div>
-{% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
