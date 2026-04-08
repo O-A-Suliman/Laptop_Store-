@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView,DetailView
-from .models import Product,Order
+from .models import Product,Order,Category
 from rest_framework import generics
 from .serializers import ProductSerializer
 from django.shortcuts import get_object_or_404, redirect
@@ -23,9 +23,17 @@ class ProductsList(ListView):
         if category_query:
             queryset=queryset.filter(category__name__icontains=category_query)
         return queryset
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories']=Category.objects.all()
+        return context
 class ProductDetail(DetailView):
     model = Product
     template_name = "products/product_detail.html"
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        context["related_products"]=Product.objects.filter(category=self.object.category).exclude(id=self.object.id)[:3]
+        return context
 
 class ProductListAPI(generics.ListAPIView):
     queryset = Product.objects.all()
@@ -87,3 +95,15 @@ def dashboard_reports_view(request):
 # ['total'] عشان نطلع الرقم من القاموس مباشرة
     total=Order.objects.filter(status='COMPLETED').aggregate(total=Sum('product__price'))['total']
     return render(request,'products/dashboard_reports.html',{'total':total,"completed_order":completed_order})
+
+
+def add_to_cart(request,product_id):
+    cart=request.session.get('cart',{})
+    product_id=str(product_id)
+    if product_id in cart:
+        cart[product_id]+=1
+    else:
+        cart[product_id]=1
+    request.session['cart']=cart
+    request.session.modified = True
+    return redirect ("ProductsList")
