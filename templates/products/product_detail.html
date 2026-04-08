@@ -1,48 +1,92 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center py-5">
-    <div class="col-lg-10">
-        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-            <div class="row g-0">
-                
-                <div class="col-md-6 bg-white d-flex align-items-center justify-content-center p-4">
-                    {% if object.image %}
-                    <img src="{{ object.image.url }}" class="img-fluid rounded-start" alt="{{ object.name }}" style="max-height: 400px; object-fit: contain;">
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'ProductsList' %}" class="text-decoration-none">الرئيسية</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'ProductsList' %}?category={{ object.category.name }}" class="text-decoration-none">{{ object.category.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ object.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5">
+        <div class="row g-0">
+            <div class="col-md-5 bg-light d-flex align-items-center justify-content-center p-5">
+                {% if object.image %}
+                <img src="{{ object.image.url }}" class="img-fluid rounded" alt="{{ object.name }}" style="max-height: 400px; object-fit: contain;">
+                {% else %}
+                <i class="bi bi-laptop text-secondary" style="font-size: 10rem;"></i>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-7 p-5">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-primary px-3 py-2 rounded-pill fs-6">{{ object.category.name }}</span>
+                    {% if orders_count > 0 %}
+                    <span class="text-danger fw-bold"><i class="bi bi-fire"></i> تم بيعه {{ orders_count }} مرة!</span>
                     {% endif %}
                 </div>
+                
+                <h1 class="fw-bold mb-3">{{ object.name }}</h1>
+                <h2 class="text-success fw-bold mb-4">${{ object.price }}</h2>
+                
+                {% if object.description %}
+                <p class="text-muted fs-5 mb-4">{{ object.description }}</p>
+                {% endif %}
 
-                <div class="col-md-6 bg-light">
-                    <div class="card-body p-5 d-flex flex-column h-100">
-                        <div class="mb-4">
-                            <span class="badge bg-secondary mb-2 fs-6">{{ object.category.name }}</span>
-                            <h2 class="card-title fw-bold text-dark mb-3">{{ object.name }}</h2>
-                            <h3 class="text-primary fw-bold mb-4">{{ object.price }} $</h3>
-                        </div>
+                <h5 class="fw-bold border-bottom pb-2 mb-3">المواصفات التقنية:</h5>
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item bg-transparent px-0"><i class="bi bi-cpu-fill text-primary me-2"></i> <strong>المعالج (CPU):</strong> {{ object.CPU }}</li>
+                    <li class="list-group-item bg-transparent px-0"><i class="bi bi-memory text-primary me-2"></i> <strong>الرام (RAM):</strong> {{ object.RAM }}</li>
+                    <li class="list-group-item bg-transparent px-0"><i class="bi bi-device-hdd text-primary me-2"></i> <strong>مساحة التخزين:</strong> {{ object.storage }}</li>
+                    <li class="list-group-item bg-transparent px-0"><i class="bi bi-gpu-card text-primary me-2"></i> <strong>كارت الشاشة (GPU):</strong> {{ object.GPU }}</li>
+                </ul>
 
-                        <div class="mb-5">
-                            <h5 class="fw-bold text-dark">المواصفات والتفاصيل:</h5>
-                            <p class="card-text text-muted" style="line-height: 1.8;">
-                                {{ object.description|linebreaks }}
-                            </p>
-                        </div>
-
-                        <div class="mt-auto">
-                            <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=مرحباً، أريد طلب هذا اللابتوب: {{ object.name|urlencode }}" 
-                               target="_blank" 
-                               class="btn btn-success btn-lg w-100 fw-bold rounded-pill shadow-sm d-flex justify-content-center align-items-center gap-2">
-                               <i class="bi bi-whatsapp"></i> اطلب الآن عبر واتساب
-                            </a>
-                        </div>
-                        
+                <div class="d-flex align-items-center mt-4 p-4 bg-light rounded-4 border">
+                    <div class="me-4">
+                        {% if object.stock > 0 %}
+                        <div class="text-success fw-bold mb-1"><i class="bi bi-check-circle-fill"></i> متوفر في المخزون</div>
+                        <small class="text-muted">الكمية المتبقية: {{ object.stock }}</small>
+                        {% else %}
+                        <div class="text-danger fw-bold"><i class="bi bi-x-circle-fill"></i> نفد من المخزون</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="ms-auto">
+                        {% if object.stock > 0 %}
+                        <a href="{% url 'add_to_cart' object.id %}" class="btn btn-dark btn-lg rounded-pill px-5 fw-bold shadow">
+                            <i class="bi bi-cart-plus me-2"></i> أضف إلى السلة
+                        </a>
+                        {% else %}
+                        <button class="btn btn-secondary btn-lg rounded-pill px-5 fw-bold" disabled>غير متوفر حالياً</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="mt-4 text-center">
-            <a href="/" class="btn btn-outline-secondary rounded-pill px-4">← العودة للمتجر</a>
-        </div>
     </div>
+
+    {% if related_products %}
+    <h3 class="fw-bold mb-4">لابتوبات مشابهة قد تعجبك</h3>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for rel_product in related_products %}
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4" style="cursor: pointer;" onclick="window.location.href='{% url 'product_detail' rel_product.id %}'">
+                <div class="p-3 bg-light text-center" style="height: 200px;">
+                    {% if rel_product.image %}
+                    <img src="{{ rel_product.image.url }}" alt="{{ rel_product.name }}" style="max-height: 100%; object-fit: contain;">
+                    {% endif %}
+                </div>
+                <div class="card-body text-center">
+                    <h6 class="fw-bold">{{ rel_product.name }}</h6>
+                    <span class="text-success fw-bold">${{ rel_product.price }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

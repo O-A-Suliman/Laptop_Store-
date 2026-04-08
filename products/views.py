@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.views.generic import ListView,DetailView
-from .models import Product,Order,Category
+from .models import Product,Order,Category,StoreSetting
 from rest_framework import generics
 from .serializers import ProductSerializer
 from django.shortcuts import get_object_or_404, redirect
 from django.db.models import Sum
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
+from django.contrib import messages
+from urllib.parse import quote
 # Create your views here.
 class ProductsList(ListView):
     model=Product
@@ -33,6 +35,7 @@ class ProductDetail(DetailView):
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
         context["related_products"]=Product.objects.filter(category=self.object.category).exclude(id=self.object.id)[:3]
+        context['orders_count']=Order.objects.filter(product=self.object).count()
         return context
 
 class ProductListAPI(generics.ListAPIView):
@@ -106,6 +109,8 @@ def add_to_cart(request,product_id):
         cart[product_id]=1
     request.session['cart']=cart
     request.session.modified = True
+    product=get_object_or_404(Product,id=product_id)
+    messages.success(request, f"تم إضافة {product.name} إلى السلة بنجاح! 🛒")
     return redirect ("ProductsList")
 
 def cart_view(request):
@@ -122,22 +127,58 @@ def cart_view(request):
     return render(request,'products/cart.html',{'cart_items':cart_items,'total_price':total_price})
 
 def checkout_view(request):
-    cart=request.session.get('cart',{})
+    cart = request.session.get('cart', {})
     if not cart:
         return redirect("ProductsList")
-    if request.method=='POST':
-        total_price=0
+        
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        
+        # 1. تجهيز بداية رسالة الواتساب
+        whatsapp_msg = f"مرحباً، أريد تأكيد طلب جديد 🛒:\n\n"
+        whatsapp_msg += "تفاصيل المنتجات:\n"
+        
         for product_id in cart:
-            product=get_object_or_404(Product,id=int(product_id))
-            quantity=cart[product_id]
-            price=product.price
-            subtotal=quantity*price
-            total_price+=subtotal
-        name=request.POST.get('name')
-        phone=request.POST.get('phone')
-        address=request.POST.get('address')
-        order=Order.objects.create(name=name,address=address,phone=phone,total_price=total_price)
-        order.save()
+            product = get_object_or_404(Product, id=int(product_id))
+            quantity = cart[product_id]
+            price = product.price
+            subtotal = quantity * price
+            
+            # حفظ الطلب في قاعدة البيانات
+            order = Order.objects.create(name=name, address=address, phone=phone, total_price=subtotal, product=product)
+            
+            # خصم المخزون
+            product.stock -= quantity
+            product.save()
+            
+            # 2. إضافة اسم المنتج والكمية إلى رسالة الواتساب (داخل اللوب)
+            whatsapp_msg += f"- {product.name} (الكمية: {quantity})\n"
+            
+        # 3. إضافة بيانات العميل للرسالة (بعد انتهاء اللوب)
+        whatsapp_msg += f"\n👤 بيانات العميل:\n"
+        whatsapp_msg += f"الاسم: {name}\n"
+        whatsapp_msg += f"الهاتف: {phone}\n"
+        whatsapp_msg += f"العنوان: {address}\n"
+        
+        # تفريغ السلة
         del request.session['cart']
-        return redirect('ProductsList')
-    return render('products/checkout.html')
+        
+        # 4. جلب رقم الواتساب من الإعدادات وتوجيه العميل
+        store_setting = StoreSetting.objects.first()
+        if store_setting and store_setting.whatsapp_number:
+            # تحويل النص العربي والمسافات إلى صيغة رابط (URL Encoding)
+            encoded_msg = quote(whatsapp_msg)
+            # إزالة علامة + من الرقم ليتوافق مع رابط واتساب
+            wa_number = str(store_setting.whatsapp_number).replace('+', '')
+            
+            # الرابط النهائي
+            whatsapp_url = f"https://wa.me/{wa_number}?text={encoded_msg}"
+            return redirect(whatsapp_url)
+        else:
+            # في حال لم تكن قد أدخلت رقم واتساب في الداشبورد، نظهر له رسالة نجاح عادية
+            messages.success(request, "🎉 تم استلام طلبك بنجاح! سنتواصل معك قريباً.")
+            return redirect('ProductsList')
+            
+    return render(request, 'products/checkout.html')

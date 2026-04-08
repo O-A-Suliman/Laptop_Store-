@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h2 class="fw-bold mb-4 text-center">🚀 إتمام الطلب</h2>
+            
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white p-4 border-0">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-person-lines-fill me-2"></i> بيانات التوصيل</h5>
+                </div>
+                <div class="card-body p-5 bg-white">
+                    <form method="POST" action="{% url 'checkout' %}">
+                        {% csrf_token %} <div class="mb-4">
+                            <label for="name" class="form-label fw-bold text-muted">الاسم الكامل</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0" id="name" name="name" placeholder="مثال: محمد أحمد" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="phone" class="form-label fw-bold text-muted">رقم الهاتف</label>
+                            <input type="tel" class="form-control form-control-lg bg-light border-0" id="phone" name="phone" placeholder="أدخل رقم هاتفك للتواصل" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="address" class="form-label fw-bold text-muted">عنوان التوصيل التفصيلي</label>
+                            <textarea class="form-control form-control-lg bg-light border-0" id="address" name="address" rows="3" placeholder="المدينة، الحي، الشارع، رقم المبنى..." required></textarea>
+                        </div>
+
+                        <div class="alert alert-warning border-0 rounded-3 mb-4 mt-2" role="alert">
+                            <i class="bi bi-info-circle-fill me-2"></i> الدفع سيكون عند الاستلام بعد فحص اللابتوب والتأكد من مطابقته للمواصفات.
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow">
+                            تأكيد الطلب 🛍️
+                        </button>
+                    </form>
+                    </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'cart_view' %}" class="text-decoration-none text-muted fw-bold">
+                    <i class="bi bi-arrow-right me-1"></i> العودة للسلة
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
