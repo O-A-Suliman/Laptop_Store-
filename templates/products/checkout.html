@@ -1,49 +1,126 @@
 {% extends 'base.html' %}
 
+{% block title %}إتمام الطلب | لابتوب ستور{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* --- تحسينات صفحة الدفع (Checkout) --- */
+    
+    /* تحديد عرض أقصى للصفحة لتكون مريحة للعين ولا تتمدد بشكل مزعج في الشاشات الكبيرة */
+    .checkout-wrapper {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    /* ترويسة النموذج (Header) بتدرج لوني يعكس الهوية */
+    .checkout-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+        padding: 2rem 1.5rem;
+        border-top-left-radius: var(--border-radius-lg);
+        border-top-right-radius: var(--border-radius-lg);
+    }
+
+    /* تحسين حقول الإدخال (Inputs) لتكون أكثر تفاعلية */
+    .form-control-custom {
+        border: 2px solid transparent;
+        background-color: var(--bg-light);
+        transition: var(--transition);
+        border-radius: 0.75rem;
+    }
+    .form-control-custom:focus {
+        border-color: var(--primary-color);
+        background-color: #fff;
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    }
+
+    /* تحسين رسالة التنبيه (Alert) لتكون أنعم بصرياً */
+    .alert-custom-warning {
+        background-color: #fffbeb;
+        border: 1px solid #fde68a;
+        color: #92400e;
+        border-radius: 0.75rem;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <h2 class="fw-bold mb-4 text-center">🚀 إتمام الطلب</h2>
-            
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-                <div class="card-header bg-primary text-white p-4 border-0">
-                    <h5 class="mb-0 fw-bold"><i class="bi bi-person-lines-fill me-2"></i> بيانات التوصيل</h5>
+    
+    <div class="checkout-wrapper">
+        <div class="d-flex justify-content-center align-items-center mb-5 text-muted fw-bold">
+            <span class="d-flex align-items-center gap-2"><i class="bi bi-cart-check fs-5"></i> السلة</span>
+            <div class="mx-3 border-top border-2 border-primary" style="width: 40px;"></div>
+            <span class="d-flex align-items-center gap-2 text-primary"><i class="bi bi-credit-card-2-front-fill fs-5"></i> الدفع والتوصيل</span>
+            <div class="mx-3 border-top border-2" style="width: 40px; opacity: 0.2;"></div>
+            <span class="d-flex align-items-center gap-2" style="opacity: 0.5;"><i class="bi bi-box-seam fs-5"></i> تم الطلب</span>
+        </div>
+
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+            <div class="checkout-header text-white text-center text-md-start d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
+                <div>
+                    <h4 class="mb-1 fw-bold"><i class="bi bi-person-lines-fill me-2"></i> بيانات التوصيل</h4>
+                    <p class="mb-0 text-white-50 small">الرجاء إدخال بياناتك بدقة لضمان وصول طلبك بأسرع وقت.</p>
                 </div>
-                <div class="card-body p-5 bg-white">
-                    <form method="POST" action="{% url 'checkout' %}">
-                        {% csrf_token %} <div class="mb-4">
-                            <label for="name" class="form-label fw-bold text-muted">الاسم الكامل</label>
-                            <input type="text" class="form-control form-control-lg bg-light border-0" id="name" name="name" placeholder="مثال: محمد أحمد" required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="phone" class="form-label fw-bold text-muted">رقم الهاتف</label>
-                            <input type="tel" class="form-control form-control-lg bg-light border-0" id="phone" name="phone" placeholder="أدخل رقم هاتفك للتواصل" required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="address" class="form-label fw-bold text-muted">عنوان التوصيل التفصيلي</label>
-                            <textarea class="form-control form-control-lg bg-light border-0" id="address" name="address" rows="3" placeholder="المدينة، الحي، الشارع، رقم المبنى..." required></textarea>
-                        </div>
-
-                        <div class="alert alert-warning border-0 rounded-3 mb-4 mt-2" role="alert">
-                            <i class="bi bi-info-circle-fill me-2"></i> الدفع سيكون عند الاستلام بعد فحص اللابتوب والتأكد من مطابقته للمواصفات.
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow">
-                            تأكيد الطلب 🛍️
-                        </button>
-                    </form>
-                    </div>
+                <div class="bg-white bg-opacity-25 rounded-circle p-3 d-none d-md-block">
+                    <i class="bi bi-shield-lock-fill fs-2 text-white"></i>
+                </div>
             </div>
-            
-            <div class="text-center mt-4">
-                <a href="{% url 'cart_view' %}" class="text-decoration-none text-muted fw-bold">
-                    <i class="bi bi-arrow-right me-1"></i> العودة للسلة
-                </a>
+
+            <div class="card-body p-4 p-md-5 bg-white">
+                <form method="POST" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+                    
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control form-control-custom" id="name" name="name" placeholder="محمد أحمد" required>
+                                <label for="name" class="text-muted"><i class="bi bi-person me-1"></i> الاسم الكامل</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control form-control-custom" id="phone" name="phone" placeholder="05xxxxxxxx" required dir="ltr" style="text-align: right;">
+                                <label for="phone" class="text-muted"><i class="bi bi-telephone me-1"></i> رقم الهاتف</label>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <textarea class="form-control form-control-custom" id="address" name="address" placeholder="المدينة، الحي..." style="height: 120px" required></textarea>
+                                <label for="address" class="text-muted"><i class="bi bi-geo-alt me-1"></i> عنوان التوصيل التفصيلي (المدينة، الحي، الشارع)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-custom-warning p-4 mb-5 d-flex align-items-start gap-3 shadow-sm">
+                        <i class="bi bi-info-circle-fill fs-3 text-warning"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">طريقة الدفع: الدفع عند الاستلام</h6>
+                            <p class="mb-0 small">لن يتم خصم أي مبالغ الآن. ستدفع قيمتها فقط بعد استلام اللابتوب وفحصه والتأكد من مطابقته لجميع المواصفات المذكورة.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 border-top pt-4">
+                        <a href="{% url 'cart_view' %}" class="btn btn-link text-decoration-none text-muted fw-bold hover-primary order-2 order-md-1">
+                            <i class="bi bi-arrow-right me-1"></i> مراجعة السلة
+                        </a>
+                        
+                        <button type="submit" class="btn btn-accent btn-lg rounded-pill fw-bold shadow-sm px-5 order-1 order-md-2 hover-scale w-100 w-md-auto d-flex justify-content-center align-items-center gap-2">
+                            <span>تأكيد الطلب 🛍️</span>
+                            <i class="bi bi-check-circle-fill"></i>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
+
+        <div class="text-center text-muted small fw-semibold d-flex justify-content-center align-items-center gap-4">
+            <span><i class="bi bi-lock-fill text-success"></i> بياناتك محمية</span>
+            <span><i class="bi bi-truck text-primary"></i> توصيل سريع</span>
+            <span><i class="bi bi-shield-check text-info"></i> ضمان الجودة</span>
+        </div>
     </div>
+
 </div>
 {% endblock %}
