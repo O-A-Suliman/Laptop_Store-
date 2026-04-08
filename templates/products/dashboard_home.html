@@ -1,138 +1,91 @@
-{% extends 'base.html' %}
+{% extends 'dashboard_base.html' %}
 
-{% block content %}
-<div class="container-fluid bg-dark text-white p-5 rounded-4 shadow-lg mb-5 position-relative overflow-hidden" style="background: linear-gradient(135deg, #0b132b, #1c2541);">
-    <div class="row align-items-center">
-        <div class="col-md-7 z-1">
-            <h1 class="display-4 fw-bold mb-3">ارتقِ بأدائك مع أفضل اللابتوبات 🚀</h1>
-            <p class="lead mb-4 text-light opacity-75">اكتشف تشكيلتنا الواسعة من أجهزة اللابتوب للألعاب، الأعمال، والدراسة بأفضل الأسعار في السوق.</p>
-            <a href="#products-section" class="btn btn-primary btn-lg rounded-pill px-5 shadow">تسوق الآن</a>
-        </div>
-        <div class="col-md-5 text-center z-1 d-none d-md-block">
-            <i class="bi bi-laptop" style="font-size: 10rem; color: #0d6efd; text-shadow: 0 0 30px rgba(13,110,253,0.6);"></i>
-        </div>
-    </div>
-</div>
-
-<div class="mb-5">
-    <h3 class="fw-bold mb-4">تسوق حسب الفئة</h3>
-    <div class="row g-3">
-        <div class="col-6 col-md-3">
-            <a href="?category=" class="text-decoration-none">
-                <div class="card text-center border-0 shadow-sm rounded-4 hover-card bg-primary text-white h-100">
-                    <div class="card-body py-4 d-flex flex-column justify-content-center">
-                        <i class="bi bi-grid-fill fs-1 mb-2"></i>
-                        <h5 class="fw-bold mb-0">عرض الكل</h5>
+{% block dashboard_content %}
+<div class="row">
+    <div class="col-lg-8 mb-4 order-0">
+        <div class="card h-100">
+            <div class="d-flex align-items-end row">
+                <div class="col-sm-7">
+                    <div class="card-body" style="padding: 2rem;">
+                        <h5 class="card-title text-primary fw-bold fs-4 mb-3">تهانينا أيها المدير! 🎉</h5>
+                        <p class="mb-4 text-muted">
+                            لقد ارتفعت مبيعاتك وأداء متجرك بشكل ملحوظ. 
+                            تحقق من <span class="fw-bold text-dark">الطلبات الجديدة</span> لمعرفة التفاصيل والبدء في الشحن.
+                        </p>
+                        <a href="{% url 'dashboard_orders' %}" class="btn btn-sm btn-outline-primary px-4 py-2 fw-bold">عرض الطلبات</a>
                     </div>
                 </div>
-            </a>
-        </div>
-        {% for cat in categories %}
-        <div class="col-6 col-md-3">
-            <a href="?category={{ cat.name }}" class="text-decoration-none">
-                <div class="card text-center border-0 shadow-sm rounded-4 hover-card text-dark h-100">
-                    <div class="card-body py-4 d-flex flex-column justify-content-center">
-                        <i class="bi bi-laptop fs-1 mb-2 text-primary"></i>
-                        <h5 class="fw-bold mb-0">{{ cat.name }}</h5>
+                <div class="col-sm-5 text-center text-sm-left">
+                    <div class="card-body pb-0 px-0 px-md-4">
+                        <img src="https://demos.themeselection.com/sneat-bootstrap-html-admin-template-free/assets/img/illustrations/man-with-laptop-light.png" height="150" alt="View Badge User">
                     </div>
                 </div>
-            </a>
+            </div>
         </div>
-        {% endfor %}
     </div>
-</div>
 
-<div id="products-section" class="mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold mb-0">
-            {% if request.GET.q %}
-                نتائج البحث عن: <span class="text-primary">"{{ request.GET.q }}"</span>
-            {% elif request.GET.category %}
-                قسم: <span class="text-primary">{{ request.GET.category }}</span>
-            {% else %}
-                أحدث الأجهزة
-            {% endif %}
-        </h3>
-    </div>
-    
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {% for product in products %}
-        <div class="col">
-            <div class="card h-100 shadow-sm border-0 rounded-4 product-card">
-                {% if product.image %}
-                <div class="p-4 text-center bg-white rounded-top-4" style="height: 250px;">
-                    <img src="{{ product.image.url }}" class="img-fluid h-100 object-fit-contain transition-zoom" alt="{{ product.name }}">
-                </div>
-                {% else %}
-                <div class="p-4 text-center bg-light rounded-top-4 d-flex align-items-center justify-content-center" style="height: 250px;">
-                    <i class="bi bi-laptop text-muted" style="font-size: 5rem;"></i>
-                </div>
-                {% endif %}
-                <div class="card-body d-flex flex-column bg-light rounded-bottom-4 border-top">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="card-title fw-bold text-dark mb-0">{{ product.name }}</h5>
-                    </div>
-                    <span class="badge bg-secondary text-white px-2 py-1 align-self-start mb-2">{{ product.category.name }}</span>
-                    <p class="card-text text-muted small mt-2">{{ product.description|truncatewords:12 }}</p>
-                    
-                    <div class="mt-auto pt-3 text-center">
-                        <h4 class="text-primary fw-bold mb-3">${{ product.price }}</h4>
-                        <div class="d-grid gap-2">
-                            <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-primary rounded-pill fw-bold shadow-sm">تفاصيل الجهاز</a>
-                            <button class="btn btn-primary rounded-pill fw-bold shadow-sm"><i class="bi bi-cart-plus"></i> أضف للسلة</button>
+    <div class="col-lg-4 col-md-4 order-1">
+        <div class="row">
+            <div class="col-lg-6 col-md-12 col-6 mb-4">
+                <div class="card h-100 p-3">
+                    <div class="card-body p-0">
+                        <div class="card-title d-flex align-items-start justify-content-between mb-3">
+                            <div class="avatar flex-shrink-0">
+                                <span class="d-inline-flex p-2 rounded" style="background-color: rgba(113, 221, 55, 0.16); color: #71dd37;">
+                                    <i class="bi bi-wallet2 fs-4"></i>
+                                </span>
+                            </div>
                         </div>
+                        <span class="fw-semibold d-block mb-1 text-muted">الأرباح</span>
+                        <h4 class="card-title mb-2 fw-bold text-dark">${{ total|default:"0.00" }}</h4>
+                        <small class="text-success fw-bold"><i class="bi bi-arrow-up-short"></i> ناجحة</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 col-md-12 col-6 mb-4">
+                <div class="card h-100 p-3">
+                    <div class="card-body p-0">
+                        <div class="card-title d-flex align-items-start justify-content-between mb-3">
+                            <div class="avatar flex-shrink-0">
+                                <span class="d-inline-flex p-2 rounded" style="background-color: rgba(105, 108, 255, 0.16); color: #696cff;">
+                                    <i class="bi bi-cart-check fs-4"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <span class="fw-semibold d-block mb-1 text-muted">إجمالي الطلبات</span>
+                        <h4 class="card-title mb-2 fw-bold text-dark">{{ orders.count|default:"0" }}</h4>
+                        <small class="text-primary fw-bold"><i class="bi bi-arrow-up-short"></i> طلب</small>
                     </div>
                 </div>
             </div>
         </div>
-        {% empty %}
-        <div class="col-12 text-center py-5">
-            <div class="p-5 bg-white rounded-4 shadow-sm border">
-                <i class="bi bi-search fs-1 text-muted mb-3 d-block"></i>
-                <h3 class="text-muted mb-3">لم نتمكن من العثور على أجهزة تطابق بحثك.</h3>
-                <a href="{% url 'ProductsList' %}" class="btn btn-primary rounded-pill px-4">العودة لكل اللابتوبات</a>
-            </div>
-        </div>
-        {% endfor %}
     </div>
 </div>
 
-{% if is_paginated %}
-<nav aria-label="Page navigation" class="mt-5">
-    <ul class="pagination justify-content-center pagination-lg">
-        {% if page_obj.has_previous %}
-        <li class="page-item">
-            <a class="page-link shadow-sm rounded-end-pill" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% elif request.GET.category %}&category={{ request.GET.category }}{% endif %}">السابق</a>
-        </li>
-        {% endif %}
-
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-                <li class="page-item active" aria-current="page">
-                    <span class="page-link shadow-sm bg-primary border-primary">{{ num }}</span>
-                </li>
-            {% else %}
-                <li class="page-item">
-                    <a class="page-link shadow-sm text-dark" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% elif request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a>
-                </li>
-            {% endif %}
-        {% endfor %}
-
-        {% if page_obj.has_next %}
-        <li class="page-item">
-            <a class="page-link shadow-sm rounded-start-pill" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% elif request.GET.category %}&category={{ request.GET.category }}{% endif %}">التالي</a>
-        </li>
-        {% endif %}
-    </ul>
-</nav>
-{% endif %}
-
-<style>
-    .hover-card { transition: transform 0.3s ease, background-color 0.3s ease; border: 1px solid transparent; }
-    .hover-card:hover { transform: translateY(-5px); border-color: #0d6efd !important; }
-    .product-card { transition: transform 0.3s ease; }
-    .product-card:hover { transform: translateY(-10px); }
-    .transition-zoom { transition: transform 0.3s ease; }
-    .product-card:hover .transition-zoom { transform: scale(1.05); }
-</style>
+<div class="row">
+    <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between pb-0 mb-3">
+                <div class="card-title mb-0">
+                    <h5 class="m-0 me-2 fw-bold text-dark">نظرة على المخزون</h5>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+                    <div class="d-flex flex-column align-items-start gap-1">
+                        <h3 class="mb-0 fw-bold">{{ products.count|default:"0" }}</h3>
+                        <span class="text-muted">لابتوب مسجل في قاعدة البيانات</span>
+                    </div>
+                    <div class="avatar">
+                        <span class="d-inline-flex p-3 rounded-circle" style="background-color: rgba(3, 195, 236, 0.16); color: #03c3ec;">
+                            <i class="bi bi-laptop fs-3"></i>
+                        </span>
+                    </div>
+                </div>
+                <a href="{% url 'dashboard_inventory' %}" class="btn btn-outline-secondary w-100 mt-2">إدارة كافة المنتجات</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,65 +1,124 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block content %}
-<div class="section">
-    <div class="container">
-        <div class="row">
-            
-            <div id="store" class="col-md-12">
-                <div class="row">
-                    {% for product in products %}
-                    <div class="col-md-4 col-xs-6">
-                        <div class="product">
-                            <div class="product-img" style="height: 260px; display: flex; align-items: center; justify-content: center; background-color: #fff; padding: 10px;">
-                                {% if product.image %}
-                                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                                {% else %}
-                                <i class="fa fa-laptop" style="font-size: 8rem; color: #E4E7ED;"></i>
-                                {% endif %}
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">{{ product.category.name }}</p>
-                                <h3 class="product-name" style="height: 40px; overflow: hidden;"><a href="{% url 'product_detail' product.id %}">{{ product.name }}</a></h3>
-                                <h4 class="product-price">${{ product.price }}</h4>
-                                
-                                <div class="product-btns">
-                                    <a href="{% url 'product_detail' product.id %}" class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">التفاصيل الكاملة</span></a>
-                                </div>
-                            </div>
-                            <div class="add-to-cart">
-                                {% if product.stock > 0 %}
-                                <a href="{% url 'add_to_cart' product.id %}" class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> أضف للسلة</a>
-                                {% else %}
-                                <button class="add-to-cart-btn" disabled style="background-color: #333; color: #fff; cursor: not-allowed;"><i class="fa fa-times"></i> نفد المخزون</button>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <div class="col-12 text-center" style="padding: 100px 0;">
-                        <i class="fa fa-search" style="font-size: 5rem; color: #D10024; margin-bottom: 20px;"></i>
-                        <h3 style="color: #333;">لا توجد أجهزة مطابقة لبحثك حالياً</h3>
-                    </div>
+<style>
+    .product-card {
+        transition: all 0.3s ease-in-out;
+        border: 1px solid #f0f0f0;
+    }
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important;
+        border-color: #212529;
+    }
+    .hero-section {
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: white;
+        border-radius: 1.5rem;
+    }
+    .spec-item {
+        font-size: 0.85rem;
+    }
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>
+
+<div class="container my-4">
+    <div class="hero-section p-5 text-center shadow-lg position-relative overflow-hidden">
+        <h1 class="display-4 fw-bolder mb-3 position-relative z-1">أقوى اللابتوبات بين يديك 🚀</h1>
+        <p class="lead mb-4 opacity-75 position-relative z-1">اكتشف تشكيلتنا الجديدة بأفضل الأسعار، واطلب الآن مباشرة عبر الواتساب!</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="bg-white p-4 rounded-4 shadow-sm border">
+        <div class="row align-items-center">
+            <div class="col-md-8 mb-3 mb-md-0">
+                <div class="d-flex gap-2 overflow-auto pb-2" style="white-space: nowrap;">
+                    <a href="{% url 'ProductsList' %}" class="btn btn-{% if not request.GET.category %}dark{% else %}outline-dark{% endif %} rounded-pill px-4 fw-bold shadow-sm">الكل</a>
+                    
+                    {% for cat in categories %}
+                    <a href="?category={{ cat.name }}" class="btn btn-{% if request.GET.category == cat.name %}dark{% else %}outline-dark{% endif %} rounded-pill px-4 fw-bold shadow-sm">{{ cat.name }}</a>
                     {% endfor %}
                 </div>
-                {% if is_paginated %}
-                <div class="store-filter clearfix">
-                    <ul class="store-pagination">
-                        {% if page_obj.has_previous %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q|default:'' }}&category={{ request.GET.category|default:'' }}"><i class="fa fa-angle-right"></i></a></li>
+            </div>
+            <div class="col-md-4">
+                <form action="{% url 'ProductsList' %}" method="GET">
+                    <div class="input-group shadow-sm rounded-pill overflow-hidden">
+                        <input type="text" name="q" class="form-control border-dark ps-4" placeholder="ابحث عن لابتوب..." value="{{ request.GET.q|default:'' }}">
+                        {% if request.GET.category %}
+                        <input type="hidden" name="category" value="{{ request.GET.category }}">
                         {% endif %}
-                        
-                        <li class="active">{{ page_obj.number }}</li>
-                        
-                        {% if page_obj.has_next %}
-                        <li><a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q|default:'' }}&category={{ request.GET.category|default:'' }}"><i class="fa fa-angle-left"></i></a></li>
-                        {% endif %}
-                    </ul>
+                        <button type="submit" class="btn btn-dark px-4"><i class="bi bi-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-5">
+        {% for product in products %}
+        <div class="col">
+            <div class="card h-100 product-card rounded-4 bg-white overflow-hidden cursor-pointer" onclick="window.location.href='{% url 'product_detail' product.id %}'">
+                
+                <div class="bg-light p-4 text-center position-relative" style="height: 280px; display: flex; align-items: center; justify-content: center;">
+                    <span class="position-absolute top-0 start-0 m-3 badge bg-dark rounded-pill px-3 py-2 z-1 shadow-sm">{{ product.category.name }}</span>
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="img-fluid" style="max-height: 100%; object-fit: contain; transition: transform 0.4s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'" alt="{{ product.name }}">
+                    {% else %}
+                    <i class="bi bi-laptop text-secondary" style="font-size: 8rem;"></i>
+                    {% endif %}
                 </div>
-                {% endif %}
+                
+                <div class="card-body p-4 d-flex flex-column">
+                    <h5 class="fw-bold mb-3 text-truncate" title="{{ product.name }}">{{ product.name }}</h5>
+                    
+                    <div class="mb-4 text-muted bg-light p-3 rounded-3 spec-item border">
+                        <div class="mb-2"><i class="bi bi-cpu text-dark me-2"></i> <strong>المعالج:</strong> {{ product.CPU }}</div>
+                        <div class="mb-2"><i class="bi bi-memory text-dark me-2"></i> <strong>الرام:</strong> {{ product.RAM }}</div>
+                        <div><i class="bi bi-gpu-card text-dark me-2"></i> <strong>كارت الشاشة:</strong> {{ product.GPU }}</div>
+                    </div>
+                    
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <h3 class="text-success fw-bolder mb-0">${{ product.price }}</h3>
+                        
+                        {% if product.stock > 0 %}
+                        <object><a href="{% url 'add_to_cart' product.id %}" class="btn btn-dark rounded-pill px-4 shadow fw-bold">
+                            <i class="bi bi-cart-plus me-1"></i> للسلة
+                        </a></object>
+                        {% else %}
+                        <span class="badge bg-danger rounded-pill px-3 py-2 fs-6">نفد المخزون</span>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-emoji-frown text-muted mb-3" style="font-size: 4rem;"></i>
+            <h2 class="text-muted fw-bold">لا توجد أجهزة مطابقة لبحثك</h2>
+            <a href="{% url 'ProductsList' %}" class="btn btn-dark mt-3 rounded-pill px-5 py-2 shadow-sm">إظهار كل اللابتوبات</a>
+        </div>
+        {% endfor %}
     </div>
+
+    {% if is_paginated %}
+    <div class="d-flex justify-content-center mt-5 mb-5">
+        <ul class="pagination pagination-lg shadow-sm">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link text-dark rounded-start-pill border-dark fw-bold" href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q|default:'' }}&category={{ request.GET.category|default:'' }}">السابق</a></li>
+            {% endif %}
+            
+            <li class="page-item active"><span class="page-link bg-dark border-dark">{{ page_obj.number }}</span></li>
+            
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link text-dark rounded-end-pill border-dark fw-bold" href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q|default:'' }}&category={{ request.GET.category|default:'' }}">التالي</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
