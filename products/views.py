@@ -107,3 +107,37 @@ def add_to_cart(request,product_id):
     request.session['cart']=cart
     request.session.modified = True
     return redirect ("ProductsList")
+
+def cart_view(request):
+    cart=request.session.get('cart',{})
+    total_price=0
+    cart_items=[]
+    for product_id in cart:
+        product=get_object_or_404(Product,id=int(product_id))
+        quantity=cart[product_id]
+        price=product.price
+        subtotal=quantity*price
+        cart_items.append({'product':product,"quantity":quantity,"subtotal":subtotal})
+        total_price+=subtotal
+    return render(request,'products/cart.html',{'cart_items':cart_items,'total_price':total_price})
+
+def checkout_view(request):
+    cart=request.session.get('cart',{})
+    if not cart:
+        return redirect("ProductsList")
+    if request.method=='POST':
+        total_price=0
+        for product_id in cart:
+            product=get_object_or_404(Product,id=int(product_id))
+            quantity=cart[product_id]
+            price=product.price
+            subtotal=quantity*price
+            total_price+=subtotal
+        name=request.POST.get('name')
+        phone=request.POST.get('phone')
+        address=request.POST.get('address')
+        order=Order.objects.create(name=name,address=address,phone=phone,total_price=total_price)
+        order.save()
+        del request.session['cart']
+        return redirect('ProductsList')
+    return render('products/checkout.html')

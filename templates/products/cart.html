@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">🛒 سلة المشتريات</h2>
+
+    {% if cart_items %}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-borderless align-middle mb-0">
+                            <thead class="text-muted border-bottom">
+                                <tr>
+                                    <th scope="col">المنتج</th>
+                                    <th scope="col" class="text-center">السعر</th>
+                                    <th scope="col" class="text-center">الكمية</th>
+                                    <th scope="col" class="text-center">الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                <tr class="border-bottom">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if item.product.image %}
+                                            <img src="{{ item.product.image.url }}" class="rounded-3" alt="{{ item.product.name }}" style="width: 80px; height: 80px; object-fit: contain; background-color: #f8f9fa;">
+                                            {% endif %}
+                                            <div class="ms-3">
+                                                <h6 class="fw-bold mb-1">{{ item.product.name }}</h6>
+                                                <small class="text-muted">{{ item.product.category.name }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center fw-semibold">${{ item.product.price }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border px-3 py-2 fs-6 rounded-pill">{{ item.quantity }}</span>
+                                    </td>
+                                    <td class="text-center fw-bold text-primary">${{ item.subtotal }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 bg-primary text-white">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4 border-bottom border-light pb-3">ملخص الطلب</h4>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="fs-5">المجموع الفرعي:</span>
+                        <span class="fs-5 fw-bold">${{ total_price }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fs-5">الشحن:</span>
+                        <span class="fs-5 fw-bold">مجاني 🚀</span>
+                    </div>
+                    <hr class="border-light opacity-50">
+                    <div class="d-flex justify-content-between mb-4">
+                        <h3 class="fw-bold">الإجمالي:</h3>
+                        <h3 class="fw-bold">${{ total_price }}</h3>
+                    </div>
+                    <a href="#" class="btn btn-warning btn-lg w-100 rounded-pill fw-bold shadow">
+                        إتمام الطلب (Checkout) <i class="bi bi-arrow-left ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-cart-x text-muted" style="font-size: 6rem;"></i>
+        <h3 class="fw-bold mt-3">سلتك فارغة حالياً!</h3>
+        <p class="text-muted mb-4">يبدو أنك لم تقم بإضافة أي لابتوبات إلى سلتك بعد.</p>
+        <a href="{% url 'ProductsList' %}" class="btn btn-primary rounded-pill px-5 py-2 fw-bold shadow-sm">تصفح اللابتوبات الآن</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
