@@ -37,7 +37,7 @@ class ProductDetail(DetailView):
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
         context["related_products"]=Product.objects.filter(category=self.object.category).exclude(id=self.object.id)[:3]
-        context['orders_count']=Order.objects.filter(product=self.object).count()
+        context['orders_count'] = OrderItem.objects.filter(product=self.object).count()
         return context
 
 class ProductListAPI(generics.ListAPIView):
@@ -98,7 +98,7 @@ def dashboard_reports_view(request):
 # aggregate() بترجع Dictionary مش رقم
 # بنستخدم alias (total=) عشان نسمي النتيجة باسم واضح
 # ['total'] عشان نطلع الرقم من القاموس مباشرة
-    total=Order.objects.filter(status='COMPLETED').aggregate(total=Sum('total_price'))['total'] or 0
+    total=Order.objects.filter(status='COMPLETED').aggregate(total=Sum('grand_total'))['total'] or 0
     return render(request,'products/dashboard_reports.html',{'total':total,"completed_order":completed_order})
 
 
@@ -125,7 +125,6 @@ def cart_view(request):
     total_price=0
     cart_items=[]
     for product in products:
-        product=get_object_or_404(Product,id=id)
         quantity=cart[str(product.id)]
         price=product.price
         subtotal=quantity*price
@@ -134,72 +133,84 @@ def cart_view(request):
     return render(request,'products/cart.html',{'cart_items':cart_items,'total_price':total_price})
 
 def checkout_view(request):
-    cart_items=[]
-    total_price=0
+    # 1. جلب السلة أولاً قبل أي شيء
+    cart = request.session.get('cart', {})
+    if not cart:
+        return redirect("ProductsList")
+
+    # 2. تجهيز بيانات العرض للصفحة
+    cart_items = []
+    total_price = 0
     products = Product.objects.filter(id__in=cart.keys())
+    
     for product in products:
         quantity = cart[str(product.id)]
         subtotal = quantity * product.price
         cart_items.append({'product': product, "quantity": quantity, "subtotal": subtotal})
         total_price += subtotal
-    cart = request.session.get('cart', {})
-    if not cart:
-        return redirect("ProductsList")
         
+    # 3. معالجة إرسال الطلب (POST)
     if request.method == 'POST':
         name = request.POST.get('name')
         phone = request.POST.get('phone')
         address = request.POST.get('address')
         
-        # 1. تجهيز بداية رسالة الواتساب
-        whatsapp_msg = f"مرحباً، أريد تأكيد طلب جديد 🛒:\n\n"
-        whatsapp_msg += "تفاصيل المنتجات:\n"
-        order = Order.objects.create(name=name, address=address, phone=phone, product=product)
-        for product_id in cart:
-            product = get_object_or_404(Product, id=int(product_id))
-            quantity = cart[product_id]
-            if quantity>=product.stock:
+        # تجهيز رسالة الواتساب
+        whatsapp_msg = f"مرحباً، أريد تأكيد طلب جديد 🛒:\n\nتفاصيل المنتجات:\n"
+        
+        # إنشاء الطلب العام (الفاتورة) وحفظ الإجمالي الكلي فيها
+        # لاحظ: تم حذف product=product من هنا لأنه لم يعد موجوداً في الموديل
+        order = Order.objects.create(
+            name=name, 
+            address=address, 
+            phone=phone,
+            grand_total=total_price # حفظنا إجمالي الطلب هنا
+        )
+        
+        # الدوران على المنتجات الموجودة في السلة لإنشاء العناصر وخصم المخزون
+        for product in products: # نستخدم نفس المنتجات التي جلبناها لتسريع الكود
+            quantity = cart[str(product.id)]
+            
+            # حماية المخزون
+            if quantity > product.stock:
                 messages.error(request, f"عذراً، الكمية المطلوبة من {product.name} غير متوفرة. المتاح فقط {product.stock}.")
-                return redirect("cart_view") # نرجعه لصفحة السلة ليعدل الكمية
-            price = product.price
-            subtotal = quantity * price
+                return redirect("cart_view")
+                
+            subtotal = quantity * product.price
+            
+            # إنشاء عنصر الطلب المرتبط بالفاتورة
             OrderItem.objects.create(
-                order=order,      # <--- لاحظ كيف ربطناه بالفاتورة التي أنشأناها فوق
+                order=order,      
                 product=product, 
                 quantity=quantity, 
                 total_price=subtotal
             )
-        product.stock -= quantity
-        product.save()
             
-            # 2. إضافة اسم المنتج والكمية إلى رسالة الواتساب (داخل اللوب)            whatsapp_msg += f"- {product.name} (الكمية: {quantity})\n"
+            # خصم المخزون (تم إصلاح المسافات البادئة ليكون داخل اللوب)
+            product.stock -= quantity
+            product.save()
             
-        # 3. إضافة بيانات العميل للرسالة (بعد انتهاء اللوب)
-        whatsapp_msg += f"\n👤 بيانات العميل:\n"
-        whatsapp_msg += f"الاسم: {name}\n"
-        whatsapp_msg += f"الهاتف: {phone}\n"
-        whatsapp_msg += f"العنوان: {address}\n"
+            # إضافة اسم المنتج للواتساب (داخل اللوب)
+            whatsapp_msg += f"- {product.name} (الكمية: {quantity})\n"
+            
+        # بعد انتهاء اللوب، نضيف بيانات العميل
+        whatsapp_msg += f"\n👤 بيانات العميل:\nالاسم: {name}\nالهاتف: {phone}\nالعنوان: {address}\n"
         
         # تفريغ السلة
         del request.session['cart']
         
-        # 4. جلب رقم الواتساب من الإعدادات وتوجيه العميل
+        # توجيه العميل للواتساب
         store_setting = StoreSetting.objects.first()
         if store_setting and store_setting.whatsapp_number:
-            # تحويل النص العربي والمسافات إلى صيغة رابط (URL Encoding)
             encoded_msg = quote(whatsapp_msg)
-            # إزالة علامة + من الرقم ليتوافق مع رابط واتساب
             wa_number = str(store_setting.whatsapp_number).replace('+', '')
-            
-            # الرابط النهائي
             whatsapp_url = f"https://wa.me/{wa_number}?text={encoded_msg}"
             return redirect(whatsapp_url)
         else:
-            # في حال لم تكن قد أدخلت رقم واتساب في الداشبورد، نظهر له رسالة نجاح عادية
             messages.success(request, "🎉 تم استلام طلبك بنجاح! سنتواصل معك قريباً.")
             return redirect('ProductsList')
-        
             
+    # عرض الصفحة في حالة الـ GET
     return render(request, 'products/checkout.html', {
         'cart_items': cart_items, 
         'total_price': total_price

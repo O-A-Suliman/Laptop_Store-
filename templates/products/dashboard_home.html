@@ -86,7 +86,7 @@
                         <tr>
                             <td class="fw-bold py-3 text-dark">{{ order.name }}</td>
                             <td class="py-3 text-muted">{{ order.product.name }}</td>
-                            <td class="fw-bold text-success py-3">${{ order.total_price|default:order.product.price }}</td>
+                            <td>${{ order.grand_total }}</td>
                             <td class="py-3 text-muted">{{ order.date_order|date:"Y-m-d" }}</td>
                             <td class="py-3">
                                 {% if order.status == 'PENDING' %}
