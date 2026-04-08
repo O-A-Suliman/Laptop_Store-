@@ -37,6 +37,11 @@
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(37, 211, 102, 0.2);
     }
+    .summary-card {
+        background-color: #f8f9fa;
+        border-radius: 1rem;
+        border: 1px dashed #ced4da;
+    }
 </style>
 {% endblock %}
 
@@ -54,7 +59,7 @@
             <div class="checkout-header text-white text-center text-md-start d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
                 <div>
                     <h4 class="mb-1 fw-bold"><i class="bi bi-person-lines-fill me-2"></i> بيانات التوصيل</h4>
-                    <p class="mb-0 text-white-50 small">أدخل بياناتك وسيتم تسجيل طلبك وتوجيهك لواتساب لإتمامه مباشرة.</p>
+                    <p class="mb-0 text-white-50 small">أراجع طلبك وأدخل بياناتك لتأكيد الشراء عبر واتساب.</p>
                 </div>
                 <div class="bg-white bg-opacity-25 rounded-circle p-3 d-none d-md-block">
                     <i class="bi bi-whatsapp fs-2 text-white"></i>
@@ -62,6 +67,27 @@
             </div>
 
             <div class="card-body p-4 p-md-5 bg-white">
+                
+                {% if cart_items %}
+                <div class="summary-card p-4 mb-4">
+                    <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-receipt"></i> ملخص الطلب</h5>
+                    <ul class="list-group list-group-flush mb-3">
+                        {% for item in cart_items %}
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 border-bottom border-light">
+                            <div>
+                                <h6 class="my-0 fw-bold text-secondary">{{ item.product.name }}</h6>
+                                <small class="text-muted">الكمية: {{ item.quantity }} × ${{ item.product.price }}</small>
+                            </div>
+                            <span class="text-success fw-bold">${{ item.subtotal }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="d-flex justify-content-between align-items-center border-top border-2 border-success pt-3">
+                        <h5 class="fw-bold mb-0 text-dark">الإجمالي الكلي:</h5>
+                        <h4 class="text-success fw-bold mb-0">${{ total_price }}</h4>
+                    </div>
+                </div>
+                {% endif %}
                 <form method="POST" action="{% url 'checkout' %}">
                     {% csrf_token %}
                     

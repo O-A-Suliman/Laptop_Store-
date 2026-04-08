@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView,DetailView
-from .models import Product,Order,Category,StoreSetting
+from .models import Product,Order,Category,StoreSetting,OrderItem
 from rest_framework import generics
 from .serializers import ProductSerializer
 from django.shortcuts import get_object_or_404, redirect
@@ -24,11 +24,13 @@ class ProductsList(ListView):
             queryset=queryset.filter(name__icontains=serech_queryset)
         if category_query:
             queryset=queryset.filter(category__name__icontains=category_query)
+        queryset=queryset.select_related('category')
         return queryset
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories']=Category.objects.all()
         return context
+    
 class ProductDetail(DetailView):
     model = Product
     template_name = "products/product_detail.html"
@@ -96,30 +98,35 @@ def dashboard_reports_view(request):
 # aggregate() بترجع Dictionary مش رقم
 # بنستخدم alias (total=) عشان نسمي النتيجة باسم واضح
 # ['total'] عشان نطلع الرقم من القاموس مباشرة
-    total=Order.objects.filter(status='COMPLETED').aggregate(total=Sum('product__price'))['total']
+    total=Order.objects.filter(status='COMPLETED').aggregate(total=Sum('total_price'))['total'] or 0
     return render(request,'products/dashboard_reports.html',{'total':total,"completed_order":completed_order})
 
 
 def add_to_cart(request,product_id):
     cart=request.session.get('cart',{})
     product_id=str(product_id)
+    product=get_object_or_404(Product,id=product_id)
+    current_quantity_in_cart=cart.get(product_id,0)
+    if current_quantity_in_cart + 1 > product.stock:
+        messages.error(request, f"عذراً، لم يتبق سوى {product.stock} من هذا المنتج في المخزون.")
+        return redirect("ProductsList") # نرجعه دون إضافة المنتج
     if product_id in cart:
         cart[product_id]+=1
     else:
         cart[product_id]=1
     request.session['cart']=cart
     request.session.modified = True
-    product=get_object_or_404(Product,id=product_id)
     messages.success(request, f"تم إضافة {product.name} إلى السلة بنجاح! 🛒")
     return redirect ("ProductsList")
 
 def cart_view(request):
     cart=request.session.get('cart',{})
+    products = Product.objects.filter(id__in=cart.keys())
     total_price=0
     cart_items=[]
-    for product_id in cart:
-        product=get_object_or_404(Product,id=int(product_id))
-        quantity=cart[product_id]
+    for product in products:
+        product=get_object_or_404(Product,id=id)
+        quantity=cart[str(product.id)]
         price=product.price
         subtotal=quantity*price
         cart_items.append({'product':product,"quantity":quantity,"subtotal":subtotal})
@@ -127,6 +134,14 @@ def cart_view(request):
     return render(request,'products/cart.html',{'cart_items':cart_items,'total_price':total_price})
 
 def checkout_view(request):
+    cart_items=[]
+    total_price=0
+    products = Product.objects.filter(id__in=cart.keys())
+    for product in products:
+        quantity = cart[str(product.id)]
+        subtotal = quantity * product.price
+        cart_items.append({'product': product, "quantity": quantity, "subtotal": subtotal})
+        total_price += subtotal
     cart = request.session.get('cart', {})
     if not cart:
         return redirect("ProductsList")
@@ -139,22 +154,25 @@ def checkout_view(request):
         # 1. تجهيز بداية رسالة الواتساب
         whatsapp_msg = f"مرحباً، أريد تأكيد طلب جديد 🛒:\n\n"
         whatsapp_msg += "تفاصيل المنتجات:\n"
-        
+        order = Order.objects.create(name=name, address=address, phone=phone, product=product)
         for product_id in cart:
             product = get_object_or_404(Product, id=int(product_id))
             quantity = cart[product_id]
+            if quantity>=product.stock:
+                messages.error(request, f"عذراً، الكمية المطلوبة من {product.name} غير متوفرة. المتاح فقط {product.stock}.")
+                return redirect("cart_view") # نرجعه لصفحة السلة ليعدل الكمية
             price = product.price
             subtotal = quantity * price
+            OrderItem.objects.create(
+                order=order,      # <--- لاحظ كيف ربطناه بالفاتورة التي أنشأناها فوق
+                product=product, 
+                quantity=quantity, 
+                total_price=subtotal
+            )
+        product.stock -= quantity
+        product.save()
             
-            # حفظ الطلب في قاعدة البيانات
-            order = Order.objects.create(name=name, address=address, phone=phone, total_price=subtotal, product=product)
-            
-            # خصم المخزون
-            product.stock -= quantity
-            product.save()
-            
-            # 2. إضافة اسم المنتج والكمية إلى رسالة الواتساب (داخل اللوب)
-            whatsapp_msg += f"- {product.name} (الكمية: {quantity})\n"
+            # 2. إضافة اسم المنتج والكمية إلى رسالة الواتساب (داخل اللوب)            whatsapp_msg += f"- {product.name} (الكمية: {quantity})\n"
             
         # 3. إضافة بيانات العميل للرسالة (بعد انتهاء اللوب)
         whatsapp_msg += f"\n👤 بيانات العميل:\n"
@@ -180,5 +198,9 @@ def checkout_view(request):
             # في حال لم تكن قد أدخلت رقم واتساب في الداشبورد، نظهر له رسالة نجاح عادية
             messages.success(request, "🎉 تم استلام طلبك بنجاح! سنتواصل معك قريباً.")
             return redirect('ProductsList')
+        
             
-    return render(request, 'products/checkout.html')
+    return render(request, 'products/checkout.html', {
+        'cart_items': cart_items, 
+        'total_price': total_price
+    })
