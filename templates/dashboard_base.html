@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-bs-theme="light">
     <head>
@@ -145,8 +146,8 @@
 
     <aside id="sidebar">
         <div class="sidebar-header">
-            <a href="{% url 'dashboard' %}" class="sidebar-logo">
-                <i class="bi bi-laptop"></i> TechStore
+            <a href="{% url 'dashboard' %}" class="sidebar-logo d-flex align-items-center gap-2">
+                <img src="{% static 'images/logo.png' %}" alt="Junior Store Logo" height="40" style="border-radius: 8px;">
             </a>
         </div>
 
