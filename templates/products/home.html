@@ -3,14 +3,14 @@
 
 {% block extra_css %}
 <style>
-    /* Hero Section */
-    .hero-section {
-        background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%);
+.hero-section {
+        /* تطبيق ألوان اللوجو على الهيرو سيكشن */
+        background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
         border-radius: 1.5rem;
         padding: 4rem 2rem;
         color: white;
         margin-bottom: 4rem;
-        box-shadow: 0 10px 30px rgba(13, 110, 253, 0.2);
+        box-shadow: 0 10px 30px rgba(213, 0, 249, 0.2);
     }
     
     /* Product Card Animations & Styling */
@@ -134,6 +134,50 @@
         </div>
         {% endfor %}
     </div>
+    {% if is_paginated %}
+    <div class="d-flex justify-content-center mt-5 mb-5">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-lg shadow-sm">
+                
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link text-primary fw-bold" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                        &laquo; السابق
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo; السابق</span>
+                </li>
+                {% endif %}
 
-</div>
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link bg-primary border-primary">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link text-dark fw-bold" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link text-primary fw-bold" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                        التالي &raquo;
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">التالي &raquo;</span>
+                </li>
+                {% endif %}
+
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+    </div>
 {% endblock %}

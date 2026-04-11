@@ -140,7 +140,7 @@ JAZZMIN_SETTINGS = {
     "site_title": "TechStore Admin",
     "site_header": "TechStore",
     "site_brand": "لوحة تحكم المتجر",
-    "welcome_sign": "مرحباً بك يا عمر في نظام إدارة اللابتوبات",
+    "welcome_sign": "مرحباً بك في نظام إدارة اللابتوبات",
     "copyright": "TechStore SaaS © 2026",
     
     # إخفاء التطبيقات التي لا يحتاجها البائع لتبدو اللوحة نظيفة

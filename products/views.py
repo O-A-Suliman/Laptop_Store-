@@ -215,3 +215,17 @@ def checkout_view(request):
         'cart_items': cart_items, 
         'total_price': total_price
     })
+
+def remove_from_cart(request, product_id):
+    # جلب السلة من الجلسة (session)
+    cart = request.session.get('cart', {})
+    product_id = str(product_id)
+    
+    # التحقق من وجود المنتج في السلة ثم حذفه
+    if product_id in cart:
+        del cart[product_id]
+        request.session['cart'] = cart
+        request.session.modified = True
+        messages.success(request, "تم حذف المنتج من السلة بنجاح! 🗑️")
+        
+    return redirect("cart_view")

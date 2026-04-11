@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import ProductsList, ProductDetail, ProductListAPI, ProductDetailAPI,GetDashboard,dashboard_orders_view,complete_order_view,DashboardInventoryView,dashboard_reports_view
-from .views import add_to_cart,cart_view,checkout_view
+from .views import add_to_cart,cart_view,checkout_view,remove_from_cart
 
 urlpatterns = [
     # ---- روابط الموقع العادية (HTML) ----
@@ -14,6 +14,7 @@ urlpatterns = [
     path('products/add/<int:product_id>/',add_to_cart,name='add_to_cart'),
     path('products/cartlist/', cart_view, name='cart_view'),
     path('product/checkout/', checkout_view, name='checkout'),
+    path('products/cart/remove/<int:product_id>/', remove_from_cart, name='remove_from_cart'),
 
     # ---- روابط الـ API الجديدة (JSON) ----
     path("api/products/", ProductListAPI.as_view(), name="api_products_list"),
