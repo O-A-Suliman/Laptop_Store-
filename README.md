@@ -35,5 +35,5 @@ The project relies on several key packages that should be in your `requirements.
 
 1. **Clone the repository:**
    ```bash
-   git clone <your-repository-url>
+   git clone https://github.com/O-A-Suliman/Laptop_Store-.git
    cd Laptop_Store
