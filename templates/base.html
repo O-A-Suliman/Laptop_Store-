@@ -3,219 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Laptop Store 💻 | متجر اللابتوبات{% endblock %}</title>
+    <title>{% block title %}Junior Store | متجر اللابتوبات الأول{% endblock %}</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <style>
-    /* --- متغيرات الألوان الأساسية (الوضع النهاري) --- */
+    /* ألوان Junior Store العصرية */
     :root {
-        --primary-color: #4f46e5; 
-        --primary-hover: #4338ca;
-        --accent-color: #f59e0b;  
-        --bg-color: #f8fafc;
-        --text-color: #0f172a;
-        --text-muted: #64748b;
-        --navbar-bg: rgba(255, 255, 255, 0.95);
+        --primary-color: #0d6efd; /* أزرق تقني */
+        --primary-hover: #0a58ca;
+        --accent-color: #ff2a5f;  /* أحمر/وردي عصري لزر السلة */
+        --bg-color: #f4f6f9;
+        --text-color: #2b3445;
+        --navbar-bg: #ffffff;
         --card-bg: #ffffff;
-        --border-color: #e2e8f0;
-        --border-radius-lg: 1rem;
-        --border-radius-pill: 50rem;
-        --soft-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        --hover-shadow: 0 10px 25px rgba(79, 70, 229, 0.15);
-        --transition: all 0.3s ease-in-out;
-    }
-
-    /* --- متغيرات الألوان (الوضع الليلي) --- */
-    [data-theme="dark"] {
-        --bg-color: #0f172a;
-        --text-color: #f8fafc;
-        --text-muted: #94a3b8;
-        --navbar-bg: rgba(15, 23, 42, 0.95);
-        --card-bg: #1e293b;
-        --border-color: #334155;
-        --soft-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        --border-radius-lg: 1.2rem;
+        --transition: all 0.3s ease;
     }
 
     body { 
-        font-family: 'Cairo', sans-serif; 
+        font-family: 'Tajawal', sans-serif; 
         background-color: var(--bg-color); 
         color: var(--text-color);
         display: flex;
         flex-direction: column;
         min-height: 100vh;
-        transition: background-color 0.3s, color 0.3s;
     }
 
-    /* --- دعم الوضع الليلي للعناصر --- */
+    /* Navbar Styling */
     .navbar-custom {
-        background-color: var(--navbar-bg) !important;
-        backdrop-filter: blur(10px);
-        box-shadow: var(--soft-shadow);
-        transition: var(--transition);
-        border-bottom: 1px solid var(--border-color);
+        background-color: var(--navbar-bg);
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        border-bottom: 2px solid var(--primary-color);
     }
-    
-    .card, .bg-white, .search-hero {
-        background-color: var(--card-bg) !important;
-        border-color: var(--border-color) !important;
-    }
-
-    .text-dark {
-        color: var(--text-color) !important;
-    }
-
     .navbar-brand {
         color: var(--primary-color) !important;
         font-weight: 800;
+        font-size: 1.8rem;
         letter-spacing: -0.5px;
     }
-    
-    .btn-custom-primary {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
+    .nav-link {
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 1.1rem;
         transition: var(--transition);
+        padding: 0.5rem 1rem;
     }
-    .btn-custom-primary:hover {
-        background-color: var(--primary-hover);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: var(--hover-shadow);
+    .nav-link:hover {
+        color: var(--primary-color);
     }
 
+    /* Buttons */
     .btn-accent {
         background-color: var(--accent-color);
-        color: #fff;
+        color: white;
         border: none;
+        border-radius: 50px;
         transition: var(--transition);
     }
     .btn-accent:hover {
-        background-color: #d97706;
-        color: #fff;
+        background-color: #e01b4c;
+        color: white;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(245, 158, 11, 0.2);
+        box-shadow: 0 5px 15px rgba(255, 42, 95, 0.3);
     }
 
-    .hover-scale { transition: var(--transition); }
-    .hover-scale:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--hover-shadow) !important;
-    }
-    
     main { flex: 1; }
-</style>
+    
+    /* Footer */
+    footer {
+        background-color: #2b3445;
+        color: white;
+    }
+    </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-custom sticky-top py-3">
-    <div class="container">
-        <a class="navbar-brand fs-3 d-flex align-items-center gap-2" href="{% url 'ProductsList' %}">
-            {% if site_settings and site_settings.logo %}
-                <img src="{{ site_settings.logo.url }}" alt="Logo" width="40" height="40" class="rounded-circle object-fit-cover shadow-sm">
-            {% else %}
-                <i class="bi bi-laptop"></i>
-            {% endif %}
-            <span>{{ site_settings.name|default:"لابتوب" }}<span class="text-dark">ستور</span></span>
-        </a>
-        
-        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <i class="bi bi-list fs-1 text-dark"></i>
-        </button>
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'ProductsList' %}">
+                <i class="bi bi-laptop text-primary"></i>
+                Junior <span style="color: var(--text-color);">Store</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="ms-auto d-flex align-items-center mt-3 mt-lg-0 gap-3">
-                
-                <button id="theme-toggle" class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;" title="تغيير المظهر">
-                    <i class="bi bi-moon-fill fs-5" id="theme-icon"></i>
-                </button>
-
-                <a href="{% url 'cart_view' %}" class="btn btn-accent rounded-pill fw-bold px-4 py-2 d-flex align-items-center gap-2">
-                    <i class="bi bi-cart3 fs-5"></i> 
-                    <span>سلة المشتريات</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</nav>
-
-    {% if messages %}
-    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-5" style="z-index: 1055;">
-        {% for message in messages %}
-        <div class="toast align-items-center text-bg-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} shadow-lg mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
-            <div class="d-flex px-2 py-1">
-                <div class="toast-body fs-6 fw-bold d-flex align-items-center gap-2">
-                    {% if message.tags == 'success' %}
-                    <i class="bi bi-check-circle-fill fs-5"></i>
-                    {% elif message.tags == 'error' or message.tags == 'danger' %}
-                    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
-                    {% endif %}
-                    {{ message }}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ProductsList' %}">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#products">المنتجات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">تواصل معنا</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{% url 'cart_view' %}" class="btn btn-accent fw-bold px-4 py-2 d-flex align-items-center gap-2">
+                        <i class="bi bi-cart3 fs-5"></i> 
+                        <span>السلة</span>
+                    </a>
                 </div>
-                <button type="button" class="btn-close btn-close-white me-auto m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
         </div>
-        {% endfor %}
-    </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var toastElList = [].slice.call(document.querySelectorAll('.toast'))
-            var toastList = toastElList.map(function(toastEl) {
-                return new bootstrap.Toast(toastEl)
-            });
-            toastList.forEach(toast => toast.show());
-        });
-    </script>
-    {% endif %}
+    </nav>
 
     <main class="py-4">
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-white text-center py-4 mt-auto border-top">
-        <div class="container text-muted fw-semibold">
-            <p class="mb-0">© 2026 Laptop Store. جميع الحقوق محفوظة <i class="bi bi-heart-fill text-danger mx-1"></i></p>
+    <footer id="contact" class="py-5 mt-auto">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-md-4 text-center text-md-start">
+                    <h4 class="fw-bold mb-3 text-primary"><i class="bi bi-laptop"></i> Junior Store</h4>
+                    <p class="text-white-50">وجهتك الأولى والأفضل لشراء أحدث أجهزة اللابتوب بأفضل الأسعار وأعلى جودة.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5 class="fw-bold mb-3">تواصل معنا</h5>
+                    <div class="d-flex justify-content-center gap-3 fs-4">
+                        <a href="#" class="text-white-50 text-decoration-none hover-primary"><i class="bi bi-whatsapp"></i></a>
+                        <a href="#" class="text-white-50 text-decoration-none hover-primary"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white-50 text-decoration-none hover-primary"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center text-md-end text-white-50 fw-semibold">
+                    <p class="mb-0 mt-4">© 2026 Junior Store. جميع الحقوق محفوظة.</p>
+                </div>
+            </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    {% block extra_js %}{% endblock %}
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        
-        // التحقق من الوضع المحفوظ في المتصفح
-        const currentTheme = localStorage.getItem('theme') || 'light';
-
-        if (currentTheme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            themeIcon.classList.replace('bi-moon-fill', 'bi-sun-fill');
-            themeIcon.classList.replace('text-secondary', 'text-warning');
-        }
-
-        // حدث الضغط على الزر للتبديل
-        themeToggleBtn.addEventListener('click', () => {
-            let theme = document.documentElement.getAttribute('data-theme');
-            
-            if (theme === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
-                themeIcon.classList.replace('bi-sun-fill', 'bi-moon-fill');
-                themeIcon.classList.replace('text-warning', 'text-secondary');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                themeIcon.classList.replace('bi-moon-fill', 'bi-sun-fill');
-                themeIcon.classList.replace('text-secondary', 'text-warning');
-            }
-        });
-    });
-</script>
 </body>
 </html>

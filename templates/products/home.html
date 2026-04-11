@@ -1,153 +1,139 @@
 {% extends 'base.html' %}
-
-{% block title %}الرئيسية | لابتوب ستور{% endblock %}
+{% block title %}الرئيسية | Junior Store{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* --- تحسينات بصرية خاصة بصفحة المنتجات --- */
-    
-    /* تأثير تكبير صورة اللابتوب بنعومة عند مرور الماوس (Micro-interaction) */
-    .product-card .img-wrapper img {
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%);
+        border-radius: 1.5rem;
+        padding: 4rem 2rem;
+        color: white;
+        margin-bottom: 4rem;
+        box-shadow: 0 10px 30px rgba(13, 110, 253, 0.2);
     }
-    .product-card:hover .img-wrapper img {
-        transform: scale(1.1);
-    }
     
-    /* خلفية مميزة لمنطقة البحث */
-    .search-hero {
-        background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(79, 70, 229, 0.1) 100%);
+    /* Product Card Animations & Styling */
+    .product-card {
+        border: 1px solid #eee;
         border-radius: var(--border-radius-lg);
-        padding: 3rem 1.5rem;
-        margin-bottom: 3rem;
-        border: 1px solid rgba(79, 70, 229, 0.1);
+        background: #fff;
+        transition: all 0.4s ease;
+        overflow: hidden;
     }
-
-    /* تحسين شكل أزرار الترقيم (Pagination) */
-    .pagination .page-link {
-        color: var(--text-dark);
-        transition: var(--transition);
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border-color: var(--primary-color);
     }
-    .pagination .page-link:hover {
-        background-color: var(--bg-light);
+    .product-card .img-wrapper {
+        height: 220px;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid #eee;
+    }
+    .product-card img {
+        transition: transform 0.5s ease;
+    }
+    .product-card:hover img {
+        transform: scale(1.1) rotate(-2deg);
+    }
+    .product-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+    .product-price {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--primary-color);
+    }
+    .badge-category {
+        background-color: rgba(13, 110, 253, 0.1);
         color: var(--primary-color);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container">
     
-    <div class="search-hero text-center shadow-sm">
-        <h2 class="fw-bold mb-2 text-dark">اكتشف لابتوبك القادم 🚀</h2>
-        <p class="text-muted mb-4 fs-5">تصفح أحدث الإصدارات من أفضل العلامات التجارية</p>
+    <div class="hero-section text-center">
+        <h1 class="display-4 fw-bold mb-3">مرحباً بك في Junior Store 🚀</h1>
+        <p class="fs-4 mb-5 opacity-75">أفضل اللابتوبات بأفضل الأسعار ... صُممت لتناسب طموحك</p>
         
         <div class="row justify-content-center">
-            <div class="col-md-10 col-lg-8">
-                <form method="GET" class="d-flex flex-column flex-md-row gap-2 bg-white p-2 rounded-pill shadow-sm border">
+            <div class="col-md-8">
+                <form method="GET" class="d-flex gap-2 bg-white p-2 rounded-pill shadow-lg">
+                    <input type="text" name="q" class="form-control border-0 bg-transparent shadow-none px-4" 
+                           placeholder="ابحث عن لابتوب (مثال: MacBook, Dell...)" value="{{ request.GET.q|default:'' }}">
                     
-                    <div class="input-group-text bg-transparent border-0 ms-2 d-none d-md-flex">
-                        <i class="bi bi-search text-muted fs-5"></i>
-                    </div>
-                    
-                    <input type="text" name="q" class="form-control border-0 bg-transparent shadow-none px-3" 
-                           placeholder="ابحث عن موديل، معالج، أو علامة تجارية..." 
-                           value="{{ request.GET.q|default:'' }}">
-                    
-                    <div class="vr d-none d-md-block mx-2 text-black-50 opacity-25"></div>
-                    
-                    <select name="category" class="form-select border-0 bg-transparent shadow-none text-secondary w-auto fw-semibold" style="min-width: 160px;">
+                    <select name="category" class="form-select border-0 bg-transparent shadow-none w-auto fw-bold text-muted border-start">
                         <option value="">كل الفئات</option>
                         {% for cat in categories %}
-                        <option value="{{ cat.name }}" {% if request.GET.category == cat.name %}selected{% endif %}>
-                            {{ cat.name }}
-                        </option>
+                        <option value="{{ cat.name }}" {% if request.GET.category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
                         {% endfor %}
                     </select>
                     
-                    <button type="submit" class="btn btn-custom-primary rounded-pill px-4 py-2 fw-bold d-flex align-items-center justify-content-center gap-2">
-                        <i class="bi bi-search d-md-none"></i> بحث
-                    </button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">بحث</button>
                 </form>
             </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-end mb-4" id="products">
+        <div>
+            <h2 class="fw-bold mb-1 text-dark">المنتجات المميزة 🔥</h2>
+            <p class="text-muted">اختر الجهاز الذي يناسب احتياجاتك</p>
         </div>
     </div>
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         {% for product in products %}
         <div class="col">
-            <div class="card product-card h-100 border-0 shadow-sm rounded-4 hover-scale">
-                
-                <div class="img-wrapper bg-white p-4 d-flex justify-content-center align-items-center position-relative" style="height: 240px; border-top-left-radius: var(--border-radius-lg); border-top-right-radius: var(--border-radius-lg);">
+            <div class="card product-card h-100">
+                <div class="img-wrapper position-relative">
+                    {% if product.stock <= 3 and product.stock > 0 %}
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-danger rounded-pill">كمية محدودة</span>
+                    {% endif %}
                     {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid" style="max-height: 100%; object-fit: contain;">
                     {% else %}
-                    <i class="bi bi-laptop text-secondary opacity-25" style="font-size: 6rem;"></i>
+                    <i class="bi bi-laptop text-secondary opacity-25" style="font-size: 5rem;"></i>
                     {% endif %}
                 </div>
                 
-                <div class="card-body d-flex flex-column bg-light bg-opacity-50">
-                    
+                <div class="card-body d-flex flex-column p-4">
                     <div class="d-flex justify-content-between align-items-start mb-2">
-                        <span class="badge bg-white text-primary border border-primary-subtle rounded-pill px-3 py-2 fw-semibold shadow-sm">
-                            <i class="bi bi-tag-fill me-1"></i> {{ product.category.name|default:"عام" }}
+                        <span class="badge badge-category rounded-pill px-3 py-2 fw-bold">
+                            {{ product.category.name|default:"عام" }}
                         </span>
-                        <span class="text-success fw-bolder fs-5 h5 mb-0">${{ product.price }}</span>
                     </div>
                     
-                    <h5 class="card-title fw-bold text-dark mt-2 mb-3 lh-base">{{ product.name }}</h5>
+                    <h5 class="product-title mt-2">{{ product.name }}</h5>
+                    <p class="text-muted small mb-3">CPU: {{ product.CPU|truncatechars:20 }} <br> RAM: {{ product.RAM }}</p>
                     
-                    <div class="mt-auto">
-                        <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary rounded-pill fw-bold w-100 d-flex justify-content-center align-items-center gap-2">
-                            <span>التفاصيل والشراء</span>
-                            <i class="bi bi-arrow-left-circle-fill"></i>
-                        </a>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <span class="product-price">${{ product.price }}</span>
+                        <form action="{% url 'add_to_cart' product.id %}" method="POST" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-accent rounded-circle" style="width: 40px; height: 40px; padding: 0;" title="أضف للسلة">
+                                <i class="bi bi-cart-plus"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
+                <div class="card-footer bg-white border-0 p-3 pt-0">
+                    <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary w-100 rounded-pill fw-bold">عرض التفاصيل</a>
+                </div>
             </div>
-        </div>
-        
-        {% empty %}
-        <div class="col-12 text-center py-5 my-4">
-            <div class="d-inline-flex justify-content-center align-items-center rounded-circle bg-white shadow-sm mb-4" style="width: 130px; height: 130px;">
-                <img src="https://cdn-icons-png.flaticon.com/512/7486/7486754.png" alt="لا توجد نتائج" style="width: 60px; opacity: 0.6;">
-            </div>
-            <h3 class="fw-bold text-dark">عذراً، لم نتمكن من العثور على طلبك</h3>
-            <p class="text-muted fs-5 mt-2">حاول البحث باستخدام كلمات افتتاحية مختلفة أو قم بإزالة الفلاتر.</p>
-            <a href="?" class="btn btn-custom-primary rounded-pill px-5 py-3 mt-3 fw-bold shadow-sm">
-                <i class="bi bi-arrow-clockwise me-2"></i> عرض كل اللابتوبات
-            </a>
         </div>
         {% endfor %}
     </div>
 
-    {% if is_paginated %}
-    <nav class="mt-5 pt-4 border-top" aria-label="Page navigation">
-        <ul class="pagination justify-content-center gap-2">
-            {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link rounded-circle border-0 shadow-sm d-flex justify-content-center align-items-center" href="?page={{ page_obj.previous_page_number }}" style="width: 45px; height: 45px;">
-                    <i class="bi bi-chevron-right fs-5"></i>
-                </a>
-            </li>
-            {% endif %}
-            
-            <li class="page-item active" aria-current="page">
-                <span class="page-link rounded-circle border-0 shadow-sm d-flex justify-content-center align-items-center fw-bold text-white" style="width: 45px; height: 45px; background-color: var(--primary-color);">
-                    {{ page_obj.number }}
-                </span>
-            </li>
-            
-            {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link rounded-circle border-0 shadow-sm d-flex justify-content-center align-items-center" href="?page={{ page_obj.next_page_number }}" style="width: 45px; height: 45px;">
-                    <i class="bi bi-chevron-left fs-5"></i>
-                </a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
-    {% endif %}
-    
 </div>
 {% endblock %}
