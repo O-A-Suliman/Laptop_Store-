@@ -3,7 +3,6 @@ from .views import ProductsList, ProductDetail, ProductListAPI, ProductDetailAPI
 from .views import add_to_cart,cart_view,checkout_view,remove_from_cart
 
 urlpatterns = [
-    # ---- روابط الموقع العادية (HTML) ----
     path("", ProductsList.as_view(), name="ProductsList"),
     path("products/<int:pk>/", ProductDetail.as_view(), name='product_detail'),
     path("dashboard/",GetDashboard,name='dashboard'),
@@ -16,7 +15,6 @@ urlpatterns = [
     path('product/checkout/', checkout_view, name='checkout'),
     path('products/cart/remove/<int:product_id>/', remove_from_cart, name='remove_from_cart'),
 
-    # ---- روابط الـ API الجديدة (JSON) ----
     path("api/products/", ProductListAPI.as_view(), name="api_products_list"),
     path("api/products/<int:pk>/", ProductDetailAPI.as_view(), name="api_product_detail"),
 ]

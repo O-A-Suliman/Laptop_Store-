@@ -29,7 +29,7 @@ class StoreSetting(models.Model):
     facebook_link=models.CharField(max_length=255)
     logo=models.ImageField(upload_to='products',null=True,blank=True)
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs) # نقوم بالحفظ العادي أولاً
+        super().save(*args, **kwargs) 
         cache.delete('site_settings_cache')
     def __str__(self):
         return self.name

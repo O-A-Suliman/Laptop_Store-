@@ -132,49 +132,27 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # MEDIA
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # ==========================================
-# إعدادات واجهة لوحة التحكم (Jazzmin - UI/UX)
+# Jazzmin UI/UX Settings
 # ==========================================
 
 JAZZMIN_SETTINGS = {
     "site_title": "TechStore Admin",
     "site_header": "TechStore",
-    "site_brand": "لوحة تحكم المتجر",
-    "welcome_sign": "مرحباً بك في نظام إدارة اللابتوبات",
+    "site_brand": "TechStore Control Panel", 
+    "welcome_sign": "Welcome to the Laptop Management System", 
     "copyright": "TechStore SaaS © 2026",
     
-    # إخفاء التطبيقات التي لا يحتاجها البائع لتبدو اللوحة نظيفة
     "hide_apps": ["auth", "contenttypes", "sessions", "admin"],
     
-    # تخصيص أيقونات القائمة الجانبية (احترافية)
     "icons": {
-        "products.Order": "fas fa-shopping-cart",   # أيقونة عربة للطلبات
-        "products.Product": "fas fa-laptop",        # أيقونة لابتوب للمنتجات
-        "products.Category": "fas fa-tags",         # أيقونة تصنيفات
-        "products.StoreSetting": "fas fa-cogs",     # أيقونة ترس للإعدادات
+        "products.Order": "fas fa-shopping-cart",
+        "products.Product": "fas fa-laptop",
+        "products.Category": "fas fa-tags",
+        "products.StoreSetting": "fas fa-cogs",
     },
     
-    # ترتيب ظهور الأقسام في القائمة الجانبية
     "order_with_respect_to": ["products.Order", "products.Product", "products.Category", "products.StoreSetting"],
-    
-    # تحسين شكل شاشة إضافة منتج (تفعيل تقسيم البطاقات الذي برمجته أنت)
     "show_ui_builder": False,
-}
-
-JAZZMIN_UI_TWEAKS = {
-    # المظهر الأسود والذهبي الفخم (Black & Gold Premium)
-    "navbar": "navbar-dark",
-    "theme": "cyborg", # المظهر الداكن الأساسي
-    "sidebar": "sidebar-dark-warning", # قائمة جانبية سوداء مع تحديدات ذهبية
-    "sidebar_nav_child_indent": True,
-    "theme_color": "warning", # جعل الأزرار الأساسية باللون الذهبي
-    "dark_mode_theme": "cyborg",
-    "button_classes": {
-        "primary": "btn-warning", # الأزرار المهمة (مثل الحفظ) ذهبية
-        "secondary": "btn-outline-secondary",
-        "info": "btn-info",
-        "warning": "btn-warning",
-        "danger": "btn-danger",
-        "success": "btn-success"
-    }
 }

@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
-{% block title %}الرئيسية | Junior Store{% endblock %}
+{% block title %}Home | Junior Store{% endblock %}
 
 {% block extra_css %}
 <style>
 .hero-section {
-        /* تطبيق ألوان اللوجو على الهيرو سيكشن */
         background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
         border-radius: 1.5rem;
         padding: 4rem 2rem;
@@ -13,7 +12,6 @@
         box-shadow: 0 10px 30px rgba(213, 0, 249, 0.2);
     }
     
-    /* Product Card Animations & Styling */
     .product-card {
         border: 1px solid #eee;
         border-radius: var(--border-radius-lg);
@@ -63,23 +61,23 @@
 <div class="container">
     
     <div class="hero-section text-center">
-        <h1 class="display-4 fw-bold mb-3">مرحباً بك في Junior Store 🚀</h1>
-        <p class="fs-4 mb-5 opacity-75">أفضل اللابتوبات بأفضل الأسعار ... صُممت لتناسب طموحك</p>
+        <h1 class="display-4 fw-bold mb-3">Welcome to Junior Store 🚀</h1>
+        <p class="fs-4 mb-5 opacity-75">The best laptops at the best prices... Designed to fit your ambition.</p>
         
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <form method="GET" class="d-flex gap-2 bg-white p-2 rounded-pill shadow-lg">
                     <input type="text" name="q" class="form-control border-0 bg-transparent shadow-none px-4" 
-                           placeholder="ابحث عن لابتوب (مثال: MacBook, Dell...)" value="{{ request.GET.q|default:'' }}">
+                           placeholder="Search for a laptop (e.g., MacBook, Dell...)" value="{{ request.GET.q|default:'' }}">
                     
                     <select name="category" class="form-select border-0 bg-transparent shadow-none w-auto fw-bold text-muted border-start">
-                        <option value="">كل الفئات</option>
+                        <option value="">All Categories</option>
                         {% for cat in categories %}
                         <option value="{{ cat.name }}" {% if request.GET.category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
                         {% endfor %}
                     </select>
                     
-                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">بحث</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">Search</button>
                 </form>
             </div>
         </div>
@@ -87,8 +85,8 @@
 
     <div class="d-flex justify-content-between align-items-end mb-4" id="products">
         <div>
-            <h2 class="fw-bold mb-1 text-dark">المنتجات المميزة 🔥</h2>
-            <p class="text-muted">اختر الجهاز الذي يناسب احتياجاتك</p>
+            <h2 class="fw-bold mb-1 text-dark">Featured Products 🔥</h2>
+            <p class="text-muted">Choose the device that fits your needs</p>
         </div>
     </div>
 
@@ -98,7 +96,7 @@
             <div class="card product-card h-100">
                 <div class="img-wrapper position-relative">
                     {% if product.stock <= 3 and product.stock > 0 %}
-                        <span class="position-absolute top-0 start-0 m-2 badge bg-danger rounded-pill">كمية محدودة</span>
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-danger rounded-pill">Limited Stock</span>
                     {% endif %}
                     {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid" style="max-height: 100%; object-fit: contain;">
@@ -110,7 +108,7 @@
                 <div class="card-body d-flex flex-column p-4">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <span class="badge badge-category rounded-pill px-3 py-2 fw-bold">
-                            {{ product.category.name|default:"عام" }}
+                            {{ product.category.name|default:"General" }}
                         </span>
                     </div>
                     
@@ -121,14 +119,14 @@
                         <span class="product-price">${{ product.price }}</span>
                         <form action="{% url 'add_to_cart' product.id %}" method="POST" class="m-0">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-accent rounded-circle" style="width: 40px; height: 40px; padding: 0;" title="أضف للسلة">
+                            <button type="submit" class="btn btn-accent rounded-circle" style="width: 40px; height: 40px; padding: 0;" title="Add to Cart">
                                 <i class="bi bi-cart-plus"></i>
                             </button>
                         </form>
                     </div>
                 </div>
                 <div class="card-footer bg-white border-0 p-3 pt-0">
-                    <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary w-100 rounded-pill fw-bold">عرض التفاصيل</a>
+                    <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary w-100 rounded-pill fw-bold">View Details</a>
                 </div>
             </div>
         </div>
@@ -142,12 +140,12 @@
                 {% if page_obj.has_previous %}
                 <li class="page-item">
                     <a class="page-link text-primary fw-bold" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
-                        &laquo; السابق
+                        &laquo; Previous
                     </a>
                 </li>
                 {% else %}
                 <li class="page-item disabled">
-                    <span class="page-link">&laquo; السابق</span>
+                    <span class="page-link">&laquo; Previous</span>
                 </li>
                 {% endif %}
 
@@ -166,12 +164,12 @@
                 {% if page_obj.has_next %}
                 <li class="page-item">
                     <a class="page-link text-primary fw-bold" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
-                        التالي &raquo;
+                        Next &raquo;
                     </a>
                 </li>
                 {% else %}
                 <li class="page-item disabled">
-                    <span class="page-link">التالي &raquo;</span>
+                    <span class="page-link">Next &raquo;</span>
                 </li>
                 {% endif %}
 
