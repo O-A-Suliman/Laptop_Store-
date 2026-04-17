@@ -14,8 +14,7 @@ class ProductsList(ListView):
     model=Product
     template_name="products/home.html"
     context_object_name="products"
-    paginate_by=5 #عدد المنتجات في كل صفحة
-    #دالة البحث
+    paginate_by=5 
     def get_queryset(self):
         queryset= super().get_queryset()
         serech_queryset=self.request.GET.get("q")

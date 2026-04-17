@@ -1,0 +1,242 @@
+[
+    {
+        "model": "products.product",
+        "pk": 1,
+        "fields": {
+            "name": "Apple MacBook Pro 16-inch",
+            "category": 2,
+            "description": "A professional laptop designed for creators and developers, featuring a stunning Retina display and exceptional performance powered by the M2 Max chip, along with long-lasting battery life.",
+            "price": "2499.99",
+            "image": "products/Apple_MacBook_Pro_16-inch.jpg",
+            "CPU": "Apple M2 Max (12-core)",
+            "RAM": "32GB Unified Memory",
+            "storage": "1TB NVMe SSD",
+            "GPU": "Apple 38-core GPU",
+            "stock": 15
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 2,
+        "fields": {
+            "name": "Dell XPS 15",
+            "category": 2,
+            "description": "An elegant, high-performance device with a brilliant OLED display. Perfect for content creators, thanks to its 13th Gen processor and powerful graphics card.",
+            "price": "1999.00",
+            "image": "products/Dell_XPS_15.avif",
+            "CPU": "Intel Core i9-13900H",
+            "RAM": "32GB DDR5",
+            "storage": "1TB PCIe Gen4 SSD",
+            "GPU": "NVIDIA GeForce RTX 4070 8GB",
+            "stock": 8
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 3,
+        "fields": {
+            "name": "HP Spectre x360",
+            "category": 2,
+            "description": "A premium 2-in-1 convertible laptop featuring a luxurious design and a smart pen. Lightweight and ideal for business professionals and students.",
+            "price": "1399.50",
+            "image": "products/HP_Spectre_x360.jpg",
+            "CPU": "Intel Core i7-1355U",
+            "RAM": "16GB LPDDR4x",
+            "storage": "512GB SSD",
+            "GPU": "Intel Iris Xe Graphics",
+            "stock": 19
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 4,
+        "fields": {
+            "name": "Lenovo ThinkPad X1 Carbon Gen 11",
+            "category": 2,
+            "description": "The ultimate choice for business, featuring a legendary keyboard, high durability, and an ultra-lightweight build that makes it the perfect travel companion.",
+            "price": "1750.00",
+            "image": "products/Lenovo_ThinkPad_X1_Carbon_Gen_11.avif",
+            "CPU": "Intel Core i7-1365U vPro",
+            "RAM": "16GB LPDDR5",
+            "storage": "512GB SSD",
+            "GPU": "Intel Iris Xe Graphics",
+            "stock": 12
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 5,
+        "fields": {
+            "name": "Asus ROG Zephyrus G14",
+            "category": 2,
+            "description": "A compact gaming laptop that offers an incredible balance between performance and portability, featuring an excellent high-refresh-rate display.",
+            "price": "1599.99",
+            "image": "products/Asus_ROG_Zephyrus_G14.jfif",
+            "CPU": "AMD Ryzen 9 7940HS",
+            "RAM": "16GB DDR5",
+            "storage": "1TB NVMe SSD",
+            "GPU": "NVIDIA GeForce RTX 4060 8GB",
+            "stock": 5
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 6,
+        "fields": {
+            "name": "Acer Predator Helios 300",
+            "category": 1,
+            "description": "Designed specifically for hardcore gamers, offering exceptional cooling and a seamless gaming experience powered by a robust processor and an advanced graphics card.",
+            "price": "1499.00",
+            "image": "products/Acer_Predator_Helios_300.jpg",
+            "CPU": "Intel Core i7-12700H",
+            "RAM": "16GB DDR5",
+            "storage": "1TB Gen4 SSD",
+            "GPU": "NVIDIA GeForce RTX 3070 Ti 8GB",
+            "stock": 10
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 7,
+        "fields": {
+            "name": "Apple MacBook Air M2",
+            "category": 1,
+            "description": "Apple's thinnest and lightest laptop, delivering remarkable performance for everyday use with all-day battery life and a fanless design.",
+            "price": "1199.00",
+            "image": "products/Apple_MacBook_Air_M2.jpg",
+            "CPU": "Apple M2 (8-core)",
+            "RAM": "8GB Unified Memory",
+            "storage": "256GB SSD",
+            "GPU": "Apple 8-core GPU",
+            "stock": 30
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 8,
+        "fields": {
+            "name": "MSI Raider GE78 HX",
+            "category": 1,
+            "description": "Unmatched raw power with dazzling RGB lighting. It serves as a complete desktop replacement, capable of running the heaviest applications and games.",
+            "price": "2999.00",
+            "image": "products/Msi-Raider-GE78-HX-14VIG.webp",
+            "CPU": "Intel Core i9-13980HX",
+            "RAM": "32GB DDR5 5600MHz",
+            "storage": "2TB NVMe Gen4 SSD",
+            "GPU": "NVIDIA GeForce RTX 4080 12GB",
+            "stock": 2
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 9,
+        "fields": {
+            "name": "Razer Blade 15",
+            "category": 1,
+            "description": "Combines the elegance of a slim metallic design with the sheer power of gaming components for a truly premium experience.",
+            "price": "2299.99",
+            "image": "products/Razer_Blade_15.jpg",
+            "CPU": "Intel Core i7-13800H",
+            "RAM": "16GB DDR5",
+            "storage": "1TB SSD",
+            "GPU": "NVIDIA GeForce RTX 4070 8GB",
+            "stock": 7
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 10,
+        "fields": {
+            "name": "Dell Alienware m15 R7",
+            "category": 1,
+            "description": "A distinctive alien-inspired design paired with powerful performance and an incredible screen refresh rate, making it ideal for competitive gaming enthusiasts.",
+            "price": "1899.50",
+            "image": "products/Dell_Alienware_m15_R7.avif",
+            "CPU": "Intel Core i7-12700H",
+            "RAM": "16GB DDR5",
+            "storage": "1TB SSD",
+            "GPU": "NVIDIA GeForce RTX 3080 8GB",
+            "stock": 4
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 11,
+        "fields": {
+            "name": "HP Envy 16",
+            "category": 3,
+            "description": "Designed for creators at an affordable price relative to its performance. Features a highly color-accurate display and a graphics card that supports fast rendering.",
+            "price": "1349.00",
+            "image": "products/HP_Envy_16.webp",
+            "CPU": "Intel Core i7-13700H",
+            "RAM": "16GB DDR5",
+            "storage": "1TB NVMe SSD",
+            "GPU": "NVIDIA GeForce RTX 4060 8GB",
+            "stock": 14
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 12,
+        "fields": {
+            "name": "Asus ZenBook 14 OLED",
+            "category": 3,
+            "description": "A thin and light laptop with an OLED display that delivers vibrant colors and deep blacks. Perfect for content consumption and work.",
+            "price": "999.99",
+            "image": "products/Asus_ZenBook_14_OLED.jpg",
+            "CPU": "AMD Ryzen 7 7730U",
+            "RAM": "16GB LPDDR4x",
+            "storage": "512GB SSD",
+            "GPU": "AMD Radeon Graphics",
+            "stock": 22
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 13,
+        "fields": {
+            "name": "Lenovo Legion Pro 5i",
+            "category": 3,
+            "description": "Excellent value for gamers, featuring robust build quality and an advanced cooling system that maintains stable performance.",
+            "price": "1699.00",
+            "image": "products/elsxf6rwrtxudesy107rsj88cg0qhx499173.webp",
+            "CPU": "Intel Core i7-13700HX",
+            "RAM": "16GB DDR5 4800MHz",
+            "storage": "1TB PCIe SSD",
+            "GPU": "NVIDIA GeForce RTX 4070 8GB",
+            "stock": 9
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 14,
+        "fields": {
+            "name": "Acer Swift X 14",
+            "category": 3,
+            "description": "Aimed at budget-conscious content creators, this device combines a powerful processor and a dedicated graphics card within a lightweight chassis.",
+            "price": "1099.00",
+            "image": "products/71d5rAq4YaL.jpg",
+            "CPU": "Intel Core i7-13700H",
+            "RAM": "16GB LPDDR5",
+            "storage": "1TB SSD",
+            "GPU": "NVIDIA GeForce RTX 4050 6GB",
+            "stock": 18
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 15,
+        "fields": {
+            "name": "Microsoft Surface Laptop 5",
+            "category": 3,
+            "description": "The pure Windows experience featuring a gorgeous PixelSense display and a 3:2 aspect ratio, making it perfectly suited for productivity and office work.",
+            "price": "1299.00",
+            "image": "products/0ca6504ee9558867d62a1d51075f5261.jpg",
+            "CPU": "Intel Core i7-1255U",
+            "RAM": "16GB LPDDR5x",
+            "storage": "512GB SSD",
+            "GPU": "Intel Iris Xe Graphics",
+            "stock": 11
+        }
+    }
+]
